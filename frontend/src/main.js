@@ -6,15 +6,15 @@ import router from './router'
 import ElementUI from 'element-ui'
 import axios from 'axios'
 import 'element-ui/lib/theme-chalk/index.css'
-import Antd from 'ant-design-vue';
-import 'ant-design-vue/dist/antd.css';
+import * as echarts from 'echarts'
+
+Vue.use(ElementUI)
 
 Vue.config.productionTip = false
-Vue.use(ElementUI)
+Vue.prototype.$echarts = echarts
 Vue.prototype.$http = axios
 // 文件服务器
 Vue.prototype.HOST = 'http://47.106.217.8:9001/'
-Vue.use(Antd);
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
