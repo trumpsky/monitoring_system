@@ -9,6 +9,11 @@ export default new Router({
       path: '/',
       name: 'Test',
       component: () => import('@/pages/Test')
-    }
+    },
+    {
+      path: '/clutter',
+      name: 'Clutter',
+      component: () => import('@/pages/ClutterLevel')
+    },
   ]
 })
