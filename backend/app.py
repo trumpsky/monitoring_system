@@ -1,5 +1,5 @@
 from flask import Flask
-from extension import db
+from extension import db,cors
 from config import settings
 from backend.views.data_show import *
 
@@ -10,6 +10,7 @@ app.register_blueprint(ds, url_prefix = '/dataShow' )
 
 app.config.from_object(settings)
 db.init_app(app)
+cors.init_app(app)
 
 
 @app.route('/')
