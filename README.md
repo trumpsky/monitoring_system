@@ -9,7 +9,13 @@
 
 - 进入backend目录输入以下命令
 
-> python ……
+> 创建虚拟环境
+>
+> pip install -r requirements.txt
+>
+> 编写配置文件
+>
+> python app.py
 
 ## 开发流程
 

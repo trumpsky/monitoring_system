@@ -29,5 +29,7 @@ backend/*.suo
 backend/*.ntvs*
 backend/*.njsproj
 backend/*.sln
+backend/flask_env
+backend/config/localsettings.py
 
 __pycache__

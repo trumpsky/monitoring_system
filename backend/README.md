@@ -1,142 +1,85 @@
 # backend
 
-> powererd by django
+> powererd by flask
 
 ## 0. 运行环境配置
 
-1. python3.9
+1. 创建并运行虚拟环境
+
+   ```shell
+   cd backend
+   virtualenv flask_env
+   .\flask_env\Scripts\activate
+   deactivate
+   ```
 2. 需要安装以下依赖
-   ```
-   Django==4.1.2
-   django-cors-headers==3.13.0
-   PyMySQL==1.0.2
+
+   ```python
+   flask==2.2.3
+   flask-script==2.0.6
+   pymysql==1.0.3
+   dbutils==1.3
+   flask-sqlalchemy==3.0.3
    ```
 
-   > pip install -r requirements.txt
+   > pip install -r requirements.txt（后续添加依赖需手动写入 requirements 文件）
    >
+3. 在config文件夹下创建与settings.py同级的localsettings.py文件，文件应包括数据库的配置，以下为范例
 
-## 1. 项目搭建
+   ```python
+   DB_HOST = "127.0.0.1"
+   DB_USER = "oliver"
+   DB_PWD = "123"
+   DB_NAME = "db"
+   DIALECT = 'mysql'
+   DRIVER = 'pymysql'
+   DB_PORT = 3306
+   SECRET_KEY = "azaaaafg"
+   ```
 
-> django-admin startproject backend
-
-## 2. 运行步骤
+## 1. 运行步骤
 
 1. 进入backend目录
    > cd backend
    >
 2. 运行项目
-   > python manage.py runserver
+   > python app.py
    >
 
-## 3. 项目结构
-
-```
-backend
-├─ README.md
-├─ .gitignore
-├─ manage.py
-├─ backend // 项目总配置
-│  ├─ __init__.py
-│  ├─ settings.py // 项目配置
-│  ├─ urls.py // 路由配置(一级路由)
-│  └─ wsgi.py
-├─ templates
-├─ common // 公共模块
-│  ├─ migrations // 数据库迁移文件
-│  │  ├─ __init__.py
-│  ├─ __init__.py
-│  ├─ admin.py
-│  ├─ apps.py
-│  ├─ models.py // 公用数据库模型
-│  ├─ utils.py // 公用工具类
-│  └─ tests.py
-├─ module1
-│  ├─ migrations // 数据库迁移文件
-│  │  ├─ __init__.py
-│  ├─ __init__.py
-│  ├─ admin.py
-│  ├─ apps.py
-│  ├─ models.py // 数据库模型
-│  ├─ tests.py
-│  ├─ urls.py // 路由配置(二级路由)
-│  └─ views.py // 接口逻辑
-├─ module2
-| ...
-...
-```
-
-## 4. 全局配置
+## 2. 全局配置
 
 1. 跨域配置
-   - 引入django-cors-headers包
-   - 在settings.py中配置
-     - INSTALLED_APPS中添加corsheaders
-     - MIDDLEWARE中添加corsheaders.middleware.CorsMiddleware
-     - 添加以下配置
-
-     ```python
-     CORS_ORIGIN_ALLOW_ALL = True
-     CORS_ALLOW_CREDENTIALS = True
-     CORS_ALLOW_HEADERS = ('*')
-     CORS_ALLOW_METHODS = ('*')
-     ```
+   - 暂无
 2. csrf验证配置
-   - 开发阶段暂时关闭csrf验证
-   - 全局关闭:
-     注释掉settings.py中的MIDDLEWARE中的'csrf.middleware.CsrfViewMiddleware'
-   - 局部关闭:
-     在views.py中引入@csrf_exempt注解
-     ```python
-     from django.views.decorators.csrf import csrf_exempt
-     @csrf_exempt
-     def func(request):
-         pass
-     ```
-3. 数据库配置
-   ```python
-   DATABASES = {
-     'default': {
-       'ENGINE': 'django.db.backends.mysql',
-       'NAME': 'database',
-       'USER': 'root', # 账号
-       'PASSWORD': 'password', # 密码
-       'HOST': '127.0.0.1', # HOST
-       'POST': 3306, # 端口
-     }
-   }
-   ```
+   - 暂无
+3. 数据库使用统一云数据库，详细配置请询问项目开发人员
 
 ## 5. 项目规范
 
-1. 新建模块
-   - 进入backend目录
-   - 新建模块
-     > python manage.py startapp module_name
-     >
-   - settings.py中INSTALLED_APPS中添加模块
-   - 在module_name目录下新建urls.py文件
-   - 在backend目录下的urls.py中添加模块路由
-     ```python
-     from django.urls import path, include
-     urlpatterns = [
-         path('module_name/', include('module_name.urls')),
-     ]
-     ```
+1. 新建blueprint
+   - 进入backend/backend/views目录
+   - 参照data_show.py新建文件
+   - 在model.py中新建数据表
+   - 在app.py中注册蓝图实例
 2. 新建接口
-   - 在module_name目录下的views.py中添加接口
-   - 在module_name目录下的urls.py中添加接口路由
+   - 进入新建蓝图
+   - 添加接口及路由
      ```python
-     from django.urls import path
-     from . import views
-     urlpatterns = [
-         path('func/', views.func),
-     ]
+     @ds.route("/login", strict_slashes=False)
+     def login():
+         user_list = []
+         users = User.query.all()
+         for user in users:
+             user_list.append(user.to_json())
+
+         return jsonify(user_list=user_list)
      ```
 3. 数据库操作
    - 在module_name目录下的models.py中添加数据库模型
-   - 在module_name目录下的views.py中添加数据库操作
-   - 建立模型后需要迁移数据库
-     > python manage.py makemigrations
-     > python manage.py migrate
-     >
-4. 命名规范
+     ```python
+     class User(db.Model):
+         __tablename__ = 'test_table'
+         id = db.Column(db.Integer, primary_key=True)
+         name = db.Column(db.String(100))
+         age = db.Column(db.Integer)
+     ```
