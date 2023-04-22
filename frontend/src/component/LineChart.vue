@@ -12,7 +12,6 @@ export default {
   data() {
     return {
       name: "集群层面",
-      indicator: "健康情况",
       isLoading: false,
       data: this.refreshData(),
     };
@@ -46,7 +45,7 @@ export default {
         },
         title: {
           left: "center",
-          text: this.name + "-" + this.indicator,
+          text: this.name + "-" + this.moduleName,
         },
         xAxis: {
           type: "category",
@@ -130,7 +129,6 @@ export default {
       const url = "" + moduleName;
       this.$https.post(url).then((res) => {
         this.name = res.data.name;
-        this.indicator = res.data.name;
       });
     },
   },
