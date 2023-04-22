@@ -1,6 +1,6 @@
 <template>
 <div class="block">
-  <span class="demonstration">多选选择任意一级选项</span>
+  <span class="demonstration">请选择您要查看的数据</span>
   <el-cascader
     :options="options"
     :props="{ multiple: true, checkStrictly: true }"
