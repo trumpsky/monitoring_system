@@ -13,12 +13,23 @@ export default new Router({
     {
       path: '/',
       name: 'Home',
-      component: () => import('@/pages/Home')
-    },
-    {
-      path: '/clutter',
-      name: 'Clutter',
-      component: () => import('@/pages/ClutterLevel')
-    },
+      component: () => import('@/pages/Home'),
+      children: [
+        {
+          path: "/menu/1-1",
+          component: () => import('@/pages/SystemInformation')
+        },{
+          path: "/menu/1-2",
+          component: () => import('@/pages/Help')
+        },{
+          path: "/menu/1-3",
+          component: () => import('@/pages/Team')
+        },
+        {
+          path: "/menu/2-1",
+          component: () => import('@/pages/ClutterLevel')
+        },
+      ]
+    }
   ]
 })
