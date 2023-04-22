@@ -1,14 +1,14 @@
 <template>
   <div>
     <el-container>
-      <el-aside width="200px">
+      <el-aside width="240px">
         <sidebar></sidebar>
       </el-aside>
       <el-container>
         <el-header>Header</el-header>
         <el-main>
-          <div class="charts">
-            <clutter-level></clutter-level>
+          <div class="main-information">
+            <router-view></router-view>
           </div>
         </el-main>
         <el-footer>Footer</el-footer>
@@ -36,23 +36,22 @@ export default {
 
 <style scoped>
 .el-header, .el-footer {
-  background-color: #B3C0D1;
+  background-color: #3f5b94;
   color: #333;
-  text-align: center;
   line-height: 60px;
 }
 
 .el-aside {
-  background-color: #D3DCE6;
+  background-color: #3f5b94;
   color: #333;
-  text-align: center;
-  /*line-height: 700px;*/
-  width: 15%;
 }
 
 .el-main {
   background-color: #E9EEF3;
   color: #333;
-  text-align: center;
+  height: 680px;
+}
+.main-information {
+  overflow: auto;
 }
 </style>
