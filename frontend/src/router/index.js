@@ -29,6 +29,26 @@ export default new Router({
           path: "/menu/2-1",
           component: () => import('@/pages/ClutterLevel')
         },
+        {
+          path: "/menu/2-2",
+          component: () => import('@/pages/NodeSingleLevel')
+        },
+        {
+          path: "/menu/2-3",
+          component: () => import('@/pages/NodeMultipleLevel')
+        },
+        {
+          path: "/menu/3-1",
+          component: () => import('@/pages/Product')
+        },
+        {
+          path: "/menu/3-2",
+          component: () => import('@/pages/Product')
+        },
+        {
+          path: "/menu/3-3",
+          component: () => import('@/pages/Product')
+        }
       ]
     }
   ]
