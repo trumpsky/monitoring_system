@@ -4,7 +4,6 @@
              class="el-menu-vertical-demo"
              background-color="#3f5b94"
              text-color="#FFFFFF"
-             active-text-color="#000000"
              @open="handleOpen"
              @close="handleClose"
              router>
@@ -63,4 +62,8 @@ export default {
 }
 </script>
 <style scoped>
+.el-menu-item.is-active {
+  color: #fff !important;
+  background: rgb(50,73,118) !important;
+}
 </style>
