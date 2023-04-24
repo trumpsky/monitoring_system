@@ -11,18 +11,21 @@
             <router-view></router-view>
           </div>
         </el-main>
-        <el-footer>Footer</el-footer>
+        <el-footer>
+          <show-footer></show-footer>
+        </el-footer>
       </el-container>
     </el-container>
   </div>
 </template>
 
 <script>
+import ShowFooter from '../component/ShowFooter.vue';
 import Sidebar from "../component/Sidebar";
 import ClutterLevel from "./ClutterLevel";
 
 export default {
-  components: {ClutterLevel, Sidebar},
+  components: {ClutterLevel, Sidebar, ShowFooter},
   data() {
     return {
     }
