@@ -1,8 +1,5 @@
 <template>
   <div>
-    <selection-cluster></selection-cluster>
-    <selection-node-single></selection-node-single>
-    <selection-node-multiple></selection-node-multiple>
     <line-chart v-for="(item, index) in items" :moduleName="item.message" :key="index"></line-chart>
   </div>
 </template>

@@ -4,8 +4,7 @@
              class="el-menu-vertical-demo"
              background-color="#3f5b94"
              text-color="#FFFFFF"
-             @open="handleOpen"
-             @close="handleClose"
+             @select="handleSelect"
              router>
       <el-submenu index="1">
         <template slot="title">
@@ -52,13 +51,10 @@ export default {
     };
   },
   methods: {
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
+    handleSelect(key,keyPath) {
+      this.$emit("menu",key[6])
     }
-  }
+  },
 }
 </script>
 <style scoped>

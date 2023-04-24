@@ -27,7 +27,7 @@ export default new Router({
         },
         {
           path: "/menu/2-1",
-          component: () => import('@/pages/ClutterLevel')
+          component: () => import('@/pages/ClusterLevel')
         },
         {
           path: "/menu/2-2",
