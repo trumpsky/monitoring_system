@@ -2,10 +2,12 @@
   <div>
     <el-container>
       <el-aside width="240px">
-        <sidebar></sidebar>
+        <sidebar @menu="change"></sidebar>
       </el-aside>
       <el-container>
-        <el-header>Header</el-header>
+        <el-header>
+          <selection-node-single v-if="showComponent"></selection-node-single>
+        </el-header>
         <el-main>
           <div class="main-information">
             <router-view></router-view>
@@ -20,17 +22,22 @@
 </template>
 
 <script>
+import SelectionNodeSingle from '../component/SelectionNodeSingle.vue';
 import ShowFooter from '../component/ShowFooter.vue';
 import Sidebar from "../component/Sidebar";
-import ClutterLevel from "./ClutterLevel";
+import ClusterLevel from "./ClusterLevel";
 
 export default {
-  components: {ClutterLevel, Sidebar, ShowFooter},
+  components: {ClusterLevel, Sidebar, ShowFooter, SelectionNodeSingle,},
   data() {
     return {
+      showComponent: false
     }
   },
   methods: {
+    change(val){
+        this.showComponent = (val == 2)
+    }
   },
   mounted() {
   },
@@ -38,12 +45,18 @@ export default {
 </script>
 
 <style scoped>
-.el-header, .el-footer {
+.el-header {
   background-color: #3f5b94;
-  color: #333;
+  color: #fff;
+  line-height: 60px;
+  display: flex;
+  justify-content: flex-end
+}
+.el-footer {
+  background-color: #3f5b94;
+  color: #fff;
   line-height: 60px;
 }
-
 .el-aside {
   background-color: #3f5b94;
   color: #333;
