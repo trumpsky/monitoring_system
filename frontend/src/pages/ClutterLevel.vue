@@ -1,13 +1,19 @@
 <template>
   <div>
+    <selection-cluster></selection-cluster>
+    <selection-node-single></selection-node-single>
+    <selection-node-multiple></selection-node-multiple>
     <line-chart v-for="(item, index) in items" :moduleName="item.message" :key="index"></line-chart>
   </div>
 </template>
 
 <script>
-import LineChart from '../component/LineChart.vue'
+import LineChart from "../component/LineChart.vue";
+import SelectionCluster from "../component/SelectionCluster.vue";
+import SelectionNodeSingle from "../component/SelectionNodeSingle.vue";
+import SelectionNodeMultiple from "../component/SelectionNodeMultiple.vue";
 export default {
-  components: { LineChart },
+  components: { LineChart, SelectionCluster, SelectionNodeSingle, SelectionNodeMultiple },
   data() {
     return {
       items: [
@@ -29,6 +35,6 @@ export default {
   },
   mounted() {
     this.connectChart();
-  },
+  }
 }
 </script>
