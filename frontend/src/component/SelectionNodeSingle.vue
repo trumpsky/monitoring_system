@@ -1,6 +1,6 @@
 <template>
   <div class="block">
-    <span class="demonstration">请选择您要查看的数据</span>
+<!--    <span class="demonstration">请选择您要查看的数据</span>-->
     <el-cascader
       :options="options"
       :props="{ multiple: true }"
@@ -8,13 +8,15 @@
       clearable
       collapse-tags
     ></el-cascader>
+    <el-button icon="el-icon-search" circle @click="testPost"></el-button>
   </div>
 </template>
-    
-    <script>
+
+<script>
 export default {
   data() {
     return {
+      testData: {"test1":2122},
       options: [
         {
           value: "cc-cc408-hya",
@@ -1519,6 +1521,14 @@ export default {
       ],
     };
   },
+  methods: {
+    testPost() {
+      const params = new URLSearchParams()
+      params.append("test", JSON.stringify(this.options))
+      this.$http.post('http://localhost:5000/dataShow/index', params).then(res => {
+        console.log(res)
+      })
+    }
+  }
 };
 </script>
-    
