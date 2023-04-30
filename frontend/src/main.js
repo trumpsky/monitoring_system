@@ -7,6 +7,7 @@ import ElementUI from 'element-ui'
 import axios from 'axios'
 import 'element-ui/lib/theme-chalk/index.css'
 import * as echarts from 'echarts'
+import store from './store'
 
 Vue.use(ElementUI)
 
@@ -19,6 +20,7 @@ Vue.prototype.HOST = 'http://47.106.217.8:9001/'
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })
