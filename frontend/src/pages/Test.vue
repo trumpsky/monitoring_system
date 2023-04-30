@@ -51,9 +51,9 @@ export default {
                     let params = new URLSearchParams()
                     params.append('username', this.form.username)
                     params.append('password', this.form.password)
-                    this.$http.get('http://localhost:5000/').then(res => {
+                    this.$http.post('http://localhost:5000/dataShow/login', params).then(res => {
                         console.log(res)
-                        if (res.data === 'login success') {
+                        if (res.data === 'good') {
                             this.$message.success('登录成功')
                         } else {
                             this.$message.error('登录失败')
@@ -67,10 +67,10 @@ export default {
         }
     },
     mounted() {
-        this.$http.post('http://localhost:5000/').then(res => {
-            this.msg = res.data
-        })
-        this.imgUrl = this.HOST + 'test/1.jpg'
+        // this.$http.post('http://localhost:5000/').then(res => {
+        //     this.msg = res.data
+        // })
+        // this.imgUrl = this.HOST + 'test/1.jpg'
     }
 }
 </script>
