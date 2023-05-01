@@ -6,7 +6,7 @@
       </el-aside>
       <el-container>
         <el-header>
-          <selection-cluster></selection-cluster>
+          <selection-cluster :key="this.$store.getters.getObservedState"></selection-cluster>
         </el-header>
         <el-main>
           <div class="main-information">
