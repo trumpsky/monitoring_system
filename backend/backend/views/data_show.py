@@ -1,8 +1,6 @@
 from flask import Blueprint, jsonify, request
 from model import User, ClusterData, Cluster, Indicator
 import json
-import datetime
-import time
 import helper.data_process as dp
 
 ds = Blueprint("data_show", __name__)
