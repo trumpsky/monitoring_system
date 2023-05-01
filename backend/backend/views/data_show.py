@@ -151,9 +151,15 @@ def to_json(self):
         return item
 
 
-@ds.route("/indicatorName", strict_slashes=False,methods=["POST", "GET"])
-def indicator_name():
-    data = ClusterData.query.with_entities(ClusterData.indicator_id).all()
+@ds.route("/getIndicatorName", strict_slashes=False,methods=["POST", "GET"])
+def get_indicator_name():
+    mode = request.form["mode"]
+    if mode == "cluster":
+        data = ClusterData.query.with_entities(ClusterData.indicator_id).all()
+    elif mode == 'nodeSingle':
+        data = NodeSingleData.query.with_entities(NodeSingleData.indicator_id).all()
+    else:
+        data = NodeMultipleData.query.with_entities(NodeMultipleData.indicator_id).all()
     data = list(set(data))
     data = list(map(lambda x : x[0],data))
     indicators = []
@@ -176,3 +182,54 @@ def cluster_name():
         item["label"] = item.pop("cluster_name")
         cluster.append(item)
     return jsonify(cluster=cluster)
+
+@ds.route("/getNodeIP", strict_slashes=False,methods=["POST", "GET"])
+def get_node_ip():
+    cluster_name = request.form["cluster_name"]
+    cluster_id = Cluster.query.filter(Cluster.cluster_name == cluster_name).with_entities(Cluster.cluster_id).all()
+    cluster_id = list(map(lambda x : x[0],cluster_id))
+    data = Node.query.filter(Node.cluster_id == cluster_id[0]).with_entities(Node.ip).all()
+    data = list(set(data))
+    data = sorted(list(map(lambda x : x[0],data)))
+    node_ip = []
+    for item in data:
+        temp = dict()
+        temp["value"] = item
+        temp["label"] = item
+        node_ip.append(temp)
+    return jsonify(node_ip=node_ip)
+
+@ds.route("/getNodeName", strict_slashes=False,methods=["POST", "GET"])
+def get_node_name():
+    cluster_name = request.form["cluster_name"]
+    node_ip = request.form["node_ip"]
+    cluster_id = Cluster.query.filter(Cluster.cluster_name == cluster_name).with_entities(Cluster.cluster_id).all()
+    cluster_id = list(map(lambda x : x[0],cluster_id))
+    data = Node.query.filter(Node.cluster_id == cluster_id[0],Node.ip == node_ip).with_entities(Node.node_name).all()
+    data = list(set(data))
+    data = sorted(list(map(lambda x : x[0],data)))
+    node_name = []
+    for item in data:
+        temp = dict()
+        temp["value"] = item
+        temp["label"] = item
+        node_name.append(temp)
+    return jsonify(node_name=node_name)
+
+@ds.route("/getDiskName", strict_slashes=False,methods=["POST", "GET"])
+def get_disk_name():
+    cluster_name = request.form["cluster_name"]
+    node_ip = request.form["node_ip"]
+    node_name = request.form["node_name"]
+    cluster_id = Cluster.query.filter(Cluster.cluster_name == cluster_name).with_entities(Cluster.cluster_id).all()
+    cluster_id = list(map(lambda x : x[0],cluster_id))
+    data = Disk.query.filter(Disk.cluster_id == cluster_id[0],Disk.ip == node_ip,Disk.node_name == node_name).with_entities(Disk.disk_name).all()
+    data = list(set(data))
+    data = sorted(list(map(lambda x : x[0],data)))
+    disk_name = []
+    for item in data:
+        temp = dict()
+        temp["value"] = item
+        temp["label"] = item
+        disk_name.append(temp)
+    return jsonify(disk_name=disk_name)
