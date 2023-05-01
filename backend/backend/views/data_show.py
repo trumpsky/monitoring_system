@@ -1,7 +1,8 @@
+import json
 from flask import Blueprint, jsonify, request
 from model import User, ClusterData, Cluster, Indicator,Node,NodeSingleData,Disk,NodeMultipleData
-import json
 import helper.data_process as dp
+from sqlalchemy import distinct
 
 ds = Blueprint("data_show", __name__)
 
@@ -97,3 +98,39 @@ def getNodeSingleData():
     return jsonify(result_list)
 
 
+
+
+
+def to_json(self):
+        """将实例对象转化为json"""
+        item = self.__dict__
+        if "_sa_instance_state" in item:
+            del item["_sa_instance_state"]
+        return item
+
+
+@ds.route("/indicatorName", strict_slashes=False,methods=["POST", "GET"])
+def indicator_name():
+    data = ClusterData.query.with_entities(ClusterData.indicator_id).all()
+    data = list(set(data))
+    data = list(map(lambda x : x[0],data))
+    indicators = []
+    for item in data:
+        temp = Indicator.query.filter(Indicator.indicator_id == item).all()
+        for single in temp:
+            single = single.to_json()
+            single["value"] = single.pop("indicator_id")
+            single["label"] = single.pop("indicator_name")
+            indicators.append(single)
+    return jsonify(indicators = indicators)
+
+@ds.route("/clusterName", strict_slashes=False,methods=["POST", "GET"])
+def cluster_name():
+    cluster = []
+    data = Cluster.query.all()
+    for item in data:
+        item = item.to_json()
+        item["value"] = item.pop("cluster_id")
+        item["label"] = item.pop("cluster_name")
+        cluster.append(item)
+    return jsonify(cluster=cluster)
