@@ -117,7 +117,7 @@ export default {
       for (let item in pathSet){
         result.push(pathSet[item].pathLabels)
       }
-      return result
+      this.$emit("submit", result)
     }
   },
   mounted() {
