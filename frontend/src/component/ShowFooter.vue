@@ -5,7 +5,7 @@
         <h4 class="footer__nav-title">加入我们</h4>
       </a>
       <h4 class="footer__nav-title" @click="showModal">联系我们</h4>
-      <el-dialog :visible.sync="visible" width="50%" :before-close="handleClose">
+      <el-dialog :visible.sync="visible" width="50%">
         <span class="information">团队信息</span>
         <el-table :data="data" style="width: 100%">
           <el-table-column prop="name" label="姓名" width="180">
