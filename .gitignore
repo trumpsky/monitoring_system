@@ -31,5 +31,6 @@ backend/*.njsproj
 backend/*.sln
 backend/flask_env
 backend/config/localsettings.py
+backend/helper/sql_helper.py
 
 __pycache__

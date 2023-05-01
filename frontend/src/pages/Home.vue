@@ -6,7 +6,7 @@
       </el-aside>
       <el-container>
         <el-header>
-          <selection-node-single v-if="showComponent"></selection-node-single>
+          <selection-cluster></selection-cluster>
         </el-header>
         <el-main>
           <div class="main-information">
@@ -22,21 +22,23 @@
 </template>
 
 <script>
+import SelectionCluster from '../component/SelectionCluster.vue';
+import SelectionNodeMultiple from '../component/SelectionNodeMultiple.vue';
 import SelectionNodeSingle from '../component/SelectionNodeSingle.vue';
 import ShowFooter from '../component/ShowFooter.vue';
 import Sidebar from "../component/Sidebar";
 import ClusterLevel from "./ClusterLevel";
 
 export default {
-  components: {ClusterLevel, Sidebar, ShowFooter, SelectionNodeSingle,},
+  components: { ClusterLevel, Sidebar, ShowFooter, SelectionNodeSingle, SelectionNodeMultiple, SelectionCluster, },
   data() {
     return {
       showComponent: false
     }
   },
   methods: {
-    change(val){
-        this.showComponent = (val == 2)
+    change(val) {
+      this.showComponent = (val == 2)
     }
   },
   mounted() {
@@ -52,11 +54,13 @@ export default {
   display: flex;
   justify-content: flex-end
 }
+
 .el-footer {
   background-color: #3f5b94;
   color: #fff;
   line-height: 60px;
 }
+
 .el-aside {
   background-color: #3f5b94;
   color: #333;
@@ -67,7 +71,7 @@ export default {
   color: #333;
   height: 680px;
 }
+
 .main-information {
   overflow: auto;
-}
-</style>
+}</style>
