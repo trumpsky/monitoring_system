@@ -32,19 +32,22 @@ def index():
 @ds.route("/getClusterData", strict_slashes=False, methods=["POST", "GET"])
 def get_cluster_data():
     if request.method == "GET":
-        # start_time = request.form["start_time"]
-        # end_time = request.form["end_time"]
         end_time = "2023/04/12 22:35"
         start_time = "2023/04/01 00:00"
         start_time = dp.datetime_to_timestamp(start_time)
         end_time = dp.datetime_to_timestamp(end_time)
         request_number = 10
         cluster_ids = [1, 2]
-        # indicator_ids = request.form["indicator_ids"]
+        
         indicator_ids = [1, 2]
 
     if request.method == "POST":
-        pass
+        start_time = request.form["start_time"]
+        end_time = request.form["end_time"]
+        info = request.form["data"]
+        json_data = json.loads(info)
+        print(json_data)
+        return "good"
 
     result = ClusterData.query.filter(ClusterData.time > start_time,
                                       ClusterData.time < end_time,

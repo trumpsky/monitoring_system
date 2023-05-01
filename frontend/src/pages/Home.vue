@@ -6,11 +6,12 @@
       </el-aside>
       <el-container>
         <el-header>
-          <selection-cascader :key="this.$store.getters.getObservedState"></selection-cascader>
+          <selection-cascader :key="this.$store.getters.getObservedState" @submit="getChartsData"></selection-cascader>
         </el-header>
         <el-main>
           <div class="main-information">
-            <router-view></router-view>
+            <cluster-level ref="cluster"></cluster-level>
+            <!-- <router-view></router-view> -->
           </div>
         </el-main>
         <el-footer>
@@ -37,6 +38,18 @@ export default {
   methods: {
     change(val) {
       this.showComponent = (val == 2)
+    },
+    getChartsData(data){
+      console.log(data)
+      const params = new URLSearchParams();
+      params.append("data",JSON.stringify(data))
+      params.append("start_time","2023/04/01: 00:00")
+      params.append("end_time","2023/04/12 23:25")
+      this.$http
+        .post("http://localhost:5000/dataShow/getClusterData", params)
+        .then((res) => {
+          console.log()
+        });
     }
   },
   mounted() {
