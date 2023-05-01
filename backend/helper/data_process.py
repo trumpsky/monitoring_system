@@ -8,3 +8,7 @@ def datetime_to_timestamp(dt):
 
 def timestamp_to_datetime(ts):
     return datetime.datetime.fromtimestamp(ts)
+
+
+def limit_data(data, data_number, limit_number):
+    return data[0::int(data_number/limit_number)]
