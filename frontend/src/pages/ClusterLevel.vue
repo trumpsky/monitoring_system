@@ -6,11 +6,9 @@
 
 <script>
 import LineChart from "../component/LineChart.vue";
-import SelectionCluster from "../component/SelectionCluster.vue";
-import SelectionNodeSingle from "../component/SelectionNodeSingle.vue";
-import SelectionNodeMultiple from "../component/SelectionNodeMultiple.vue";
+
 export default {
-  components: { LineChart, SelectionCluster, SelectionNodeSingle, SelectionNodeMultiple },
+  components: { LineChart },
   data() {
     return {
       items: [

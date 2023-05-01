@@ -6,7 +6,7 @@
       </el-aside>
       <el-container>
         <el-header>
-          <selection-cluster :key="this.$store.getters.getObservedState"></selection-cluster>
+          <selection-cascader :key="this.$store.getters.getObservedState"></selection-cascader>
         </el-header>
         <el-main>
           <div class="main-information">
@@ -22,15 +22,13 @@
 </template>
 
 <script>
-import SelectionCluster from '../component/SelectionCluster.vue';
-import SelectionNodeMultiple from '../component/SelectionNodeMultiple.vue';
-import SelectionNodeSingle from '../component/SelectionNodeSingle.vue';
+import SelectionCascader from '../component/SelectionCascader.vue';
 import ShowFooter from '../component/ShowFooter.vue';
 import Sidebar from "../component/Sidebar";
 import ClusterLevel from "./ClusterLevel";
 
 export default {
-  components: { ClusterLevel, Sidebar, ShowFooter, SelectionNodeSingle, SelectionNodeMultiple, SelectionCluster, },
+  components: { ClusterLevel, Sidebar, ShowFooter,  SelectionCascader, },
   data() {
     return {
       showComponent: false
