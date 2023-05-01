@@ -23,9 +23,9 @@
           <span>数据模式</span>
         </template>
         <el-menu-item-group>
-          <el-menu-item index="/menu/2-1">集群数据</el-menu-item>
-          <el-menu-item index="/menu/2-2">节点单指标</el-menu-item>
-          <el-menu-item index="/menu/2-3">节点多指标</el-menu-item>
+          <el-menu-item index="/menu/2-1" @click="toCluster">集群数据</el-menu-item>
+          <el-menu-item index="/menu/2-2" @click="toNodeSingle">节点单指标</el-menu-item>
+          <el-menu-item index="/menu/2-3" @click="toNodeMultiple">节点多指标</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
       <el-submenu index="3">
@@ -53,7 +53,19 @@ export default {
   methods: {
     handleSelect(key,keyPath) {
       this.$emit("menu",key[6])
-    }
+    },
+    toCluster(){
+      this.$store.commit("updateObservedState", "cluster")
+      console.log(this.$store.getters.getObservedState)
+    },
+    toNodeSingle(){
+      this.$store.commit("updateObservedState", "nodeSingle")
+      console.log(this.$store.getters.getObservedState)
+    },
+    toNodeMultiple(){
+      this.$store.commit("updateObservedState", "nodeMultiple")
+      console.log(this.$store.getters.getObservedState)
+    },
   },
 }
 </script>

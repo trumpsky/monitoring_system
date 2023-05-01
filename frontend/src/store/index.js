@@ -8,12 +8,12 @@ export default new Vuex.Store({
   },
   mutations: {
     updateObservedState(state, observedState) {
-      state.observedState = observedState;
+      state.observedState = observedState
     }
   },
   getters: {
     getObservedState(state) {
-      return state.observedState;
+      return state.observedState
     }
   }
 });
