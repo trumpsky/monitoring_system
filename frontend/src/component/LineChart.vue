@@ -11,7 +11,7 @@ export default {
     return {
       name: this.$store.getters.getObservedState,
       isLoading: false,
-      data: [],
+      time: [],
       series: [],
       loadData: [],
       nameList: [],
@@ -51,16 +51,15 @@ export default {
         },
         title: {
           left: "center",
-          text: this.name + "-" + this.moduleName.slice(15, -1),
+          text: this.name + "-" + this.moduleName.slice(14, ),
         },
         xAxis: {
           type: "category",
-          data: this.data.map((d) =>
-            this.$moment(d.time * 1000).format("YYYY-MM-DD HH:mm:ss")
-          ), // 将数据对象映射成数组
+          data: this.time,
         },
         yAxis: {
           type: "value",
+          scale:true
         },
         series: this.series,
       };
@@ -71,8 +70,8 @@ export default {
       let chart = this.$echarts.init(this.$refs.chart);
       chart.setOption(this.option);
       chart.on('datazoom',(params)=>{
-        const startValue = this.$moment(this.data[params.batch[0].startValue].time * 1000).format("YYYY-MM-DD HH:mm")
-        const endValue =  this.$moment(this.data[params.batch[0].endValue].time * 1000).format("YYYY-MM-DD HH:mm")
+        const startValue = this.time[params.batch[0].startValue]
+        const endValue =  this.time[params.batch[0].endValue]
         let time = []
         time.push(startValue)
         time.push(endValue)
@@ -84,6 +83,7 @@ export default {
       for (let item in keys) {
         if (typeof this.propsData[keys[item]] != "string") {
           this.loadData.push(this.propsData[keys[item]]);
+          this.time = this.propsData[keys[item]].map((d) => this.$moment(d.time * 1000).format("YYYY/MM/DD HH:mm"))
           this.series.push({
             name: keys[item],
             data: this.propsData[keys[item]].map((d) => d.value),
@@ -92,11 +92,6 @@ export default {
           });
         }
       }
-      if(this.moduleName.length === 0){
-        this.moduleName = "test123456789012345678123456"
-      }
-      console.log(this.series);
-      this.data = this.propsData[keys[1]];
     }
   },
   mounted() {

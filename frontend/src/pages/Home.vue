@@ -13,7 +13,7 @@
         </el-header>
         <el-main>
           <div class="main-information">
-            <router-view :initialData="initialData" @datazoom="refreshData"></router-view>
+            <router-view :initialData="initialData" @datazoom="refreshData" :key="initialData"></router-view>
           </div>
         </el-main>
         <el-footer>
@@ -37,7 +37,6 @@ export default {
       showComponent: false,
       initialData: [],
       selectPath:[],
-      url: this.getPostPath()
     };
   },
   methods: {
@@ -50,9 +49,10 @@ export default {
       params.append("start_time",data[0])
       params.append("end_time",data[1])
       this.$http
-        .post(this.url, params)
+        .post("http://localhost:5000/dataShow/getClusterData", params)
         .then((res) => {
           console.log(res.data.result_list)
+          this.initialData = res.data.result_list
         });
     },
     getPostPath(){
@@ -67,65 +67,18 @@ export default {
     },
     getChartsData(data) {
       this.selectPath = data
-      // const params = new URLSearchParams();
-      // params.append("data",JSON.stringify(data))
-      // params.append("start_time","1970/1/1 00:00")
-      // params.append("end_time","2023/05/01 22:37")
-      // this.$http
-      //   .post(this.url, params)
-      //   .then((res) => {
-      //     console.log(res.data.result_list)
-      //     this.initialData = res.data.result_list
-      //   });
-      this.initialData = [
-        {
-          indicator: "'elasticsearch_cluster_health_active_shards'",
-          "master-vm-01": [
-            {
-              time: 1681292087,
-              value: 2038520.0,
-            },
-            {
-              time: 1681292087,
-              value: 2038520.0,
-            },
-            {
-              time: 1681292087,
-              value: 2038520.0,
-            },
-            {
-              time: 1681292087,
-              value: 2038520.0,
-            },
-            {
-              time: 1681292087,
-              value: 2038520.0,
-            },
-          ],
-          "master-vm-02": [
-            {
-              time: 1681292087,
-              value: 2038520.0,
-            },
-            {
-              time: 1681292087,
-              value: 2038520.0,
-            },
-            {
-              time: 1681292087,
-              value: 2038520.0,
-            },
-            {
-              time: 1681292087,
-              value: 2038520.0,
-            },
-            {
-              time: 1681292087,
-              value: 2038520.0,
-            },
-          ],
-        },
-      ];
+      console.log(data)
+      const params = new URLSearchParams();
+      params.append("data",JSON.stringify(data))
+      params.append("start_time","2023/04/01 00:00")
+      params.append("end_time","2023/05/01 22:37")
+      this.$http
+        .post("http://localhost:5000/dataShow/getClusterData", params)
+        .then((res) => {
+          console.log(res.data.result_list)
+          this.initialData = res.data.result_list
+        });
+        console.log(this.initialData)
     },
   },
   mounted() {
