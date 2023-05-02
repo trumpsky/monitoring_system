@@ -50,7 +50,11 @@ def find_muldule_or_package():
     for path in sys.path:
         print(path)
 
-# if __name__ == '__main__':
-#     input = [['cc-cc408-hya'], ['cc-cc408-hya', 'elasticsearch_cluster_health_active_shards'], ['cc-cc408-hya', 'elasticsearch_cluster_health_number_of_nodes'], ['cc-cc408-hya', 'elasticsearch_cluster_health_status']]
-#     tree.insert_list_to_tree(input)
-#     print(tree.tree)
+if __name__ == '__main__':
+    tree = MyTree()
+    input = [['cc-cc408-hya'], ['cc-cc408-hya', 'elasticsearch_cluster_health_active_shards'], ['cc-cc408-hya', 'elasticsearch_cluster_health_number_of_nodes'], ['cc-cc408-hya', 'elasticsearch_cluster_health_status']]
+    tree.insert_list_to_tree(input)
+    print(tree.tree)
+# {'cc-cc408-hya': {'elasticsearch_os_load5': {'9.9.2.153': {'data-node-01': {}, 'data-node-06': {}}, '9.9.2.154': {'data-node-12': {}}}, 'elasticsearch_transport_rx_size_bytes_total': {
+# '9.9.2.153': {'data-node-01': {}}}}} !!!!!!!!!!!!!!!!
+
