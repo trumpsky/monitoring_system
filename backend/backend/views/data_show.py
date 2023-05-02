@@ -130,11 +130,13 @@ def get_cluster_id(name):
     else:
         return 2
 
+
 def cluster_id_to_name(cluster_id):
-    if id==1:
+    if cluster_id == 1:
         return "cc-cc408-hya"
     else:
         return "cc-cc553-interestPrice"
+
 
 def get_node_id(node_ip, node_name, cluster_id):
     result = Node.query.filter(Node.cluster_id == cluster_id,
@@ -147,9 +149,11 @@ def get_indicator_id(name):
     result = Indicator.query.filter(Indicator.indicator_name == name).first()
     return result.indicator_id
 
+
 def indicator_id_to_name(indicator_id):
     result = Indicator.query.filter(Indicator.indicator_id == indicator_id).first()
     return result.indicator_name
+
 
 def get_disk_id(cluster_id, node_ip, node_name, disk_name):
     result = Disk.query.filter(Disk.cluster_id == cluster_id,
@@ -157,6 +161,7 @@ def get_disk_id(cluster_id, node_ip, node_name, disk_name):
                                Disk.node_name == node_name,
                                Disk.disk_name == disk_name).first()
     return result.disk_id
+
 
 def cluster_data_process(result):
     result_list = []
@@ -169,19 +174,45 @@ def cluster_data_process(result):
         if i == 0:
             cluster_id = result[i].cluster_id
             indicator_id = result[i].indicator_id
-            indicator_dict["indicator"]=indicator_id_to_name(indicator_id)
+            indicator_dict["indicator"] = indicator_id_to_name(indicator_id)
+            # cluster_name = cluster_id_to_name(cluster_id)
+            # indicator_dict[cluster_name] = point_list
 
-        if cluster_id != result[i].cluster_id:
-            cluster_name=cluster_id_to_name(cluster_id)
-            indicator_dict[cluster_name] = point_list
-            cluster_id = result[i].cluster_id
-            point_list = []
 
-        if indicator_id != result[i].indicator_id:
+        # #只变indicator
+        if indicator_id != result[i].indicator_id and cluster_id==result[i].cluster_id:
+            #1.把集群：【point_list】加到indicator_dict
+            indicator_dict[cluster_id_to_name(cluster_id)]=point_list
+            # 2.把indicator_dict append到result_list
             result_list.append(indicator_dict)
+            # 3.更新列表、字典，cluster id，indicator id
+            point_list=[]
             indicator_id = result[i].indicator_id
             indicator_dict = {}
+            cluster_id=result[i].cluster_id
+            indicator_dict["indicator"] = indicator_id_to_name(indicator_id)
+
+        #只变cluster
+        if cluster_id != result[i].cluster_id and indicator_id==result[i].indicator_id:
+            indicator_dict[cluster_id_to_name(cluster_id)] = point_list
+            # indicator_dict["cc-cc408-hya"] = point_list
+            cluster_id = result[i].cluster_id
+            point_list = []
+        #都变
+        if cluster_id != result[i].cluster_id and indicator_id!=result[i].indicator_id:
+            #1.把集群：【point_list】加到indicator_dict
+            indicator_dict[cluster_id_to_name(cluster_id)]=point_list
+            #2.把indicator_dict append到result_list
+            result_list.append(indicator_dict)
+            #3.更新列表、字典，cluster id，indicator id
+            point_list=[]
+            indicator_dict={}
+            cluster_id=result[i].cluster_id
+            indicator_id=result[i].indicator_id
+            #4.把新的indicator_dict里面增加第一行
+            # indicator：xxx
             indicator_dict["indicator"]=indicator_id_to_name(indicator_id)
+
 
         # 点的字典
         point_dict["time"] = result[i].time
@@ -195,34 +226,37 @@ def cluster_data_process(result):
 
     return result_list
 
+
 @ds.route("/getClusterData", strict_slashes=False, methods=["POST", "GET"])
 def get_cluster_data():
     if request.method == "GET":
-        end_time = "2023/04/12 22:35"
+        end_time = "2023/04/12 17:33"
         start_time = "2023/04/01 00:00"
         start_time = dp.datetime_to_timestamp(start_time)
         end_time = dp.datetime_to_timestamp(end_time)
         request_number = 10
-        cluster_ids = [1, 2]
+        cluster_ids = [1]
 
-        indicator_ids = [1, 2]
+        indicator_ids = [1, 2, 3]
 
         result = ClusterData.query.filter(ClusterData.time > start_time,
                                           ClusterData.time < end_time,
                                           ClusterData.cluster_id.in_(cluster_ids),
-                                          ClusterData.indicator_id.in_(indicator_ids)).order_by(ClusterData.cluster_id,
-                                                                                                ClusterData.indicator_id,
-                                                                                                ClusterData.time).all()
+                                          ClusterData.indicator_id.in_(indicator_ids)).order_by(
+            ClusterData.indicator_id,
+            ClusterData.cluster_id,
+            ClusterData.time).all()
         result_number = ClusterData.query.filter(ClusterData.time > start_time,
                                                  ClusterData.time < end_time,
                                                  ClusterData.cluster_id.in_(cluster_ids),
                                                  ClusterData.indicator_id.in_(indicator_ids)).count()
 
-        result = dp.limit_data(result, result_number, limit_number=request_number)
+        result = dp.limit_data(result, result_number, limit_number=result_number)
 
         result_list = []
         for item in result:
             result_list.append(item.to_json())
+        result_list = cluster_data_process(result)
 
     if request.method == "POST":
         start_time = request.form["start_time"]
@@ -247,10 +281,10 @@ def get_cluster_data():
                 ClusterData.indicator_id,
                 ClusterData.time).all())
             result_number = ClusterData.query.filter(ClusterData.time > start_time,
-                                                    ClusterData.time < end_time,
-                                                    ClusterData.cluster_id == cluster_id,
-                                                    ClusterData.indicator_id.in_(indicator_ids)).count()
-            result_item = dp.limit_data(result_item, result_number, limit_number=request_number*len(indicator_ids))
+                                                     ClusterData.time < end_time,
+                                                     ClusterData.cluster_id == cluster_id,
+                                                     ClusterData.indicator_id.in_(indicator_ids)).count()
+            result_item = dp.limit_data(result_item, result_number, limit_number=request_number * len(indicator_ids))
             result.extend(result_item)
         result_list = []
         for item in result:
@@ -258,8 +292,6 @@ def get_cluster_data():
         print(result_list)
 
     return jsonify(result_list=result_list)
-
-
 
 
 def single_result_process(result):
@@ -331,7 +363,6 @@ def get_node_single_data():
         tree_data = list_to_tree(list_data)
         result = []
 
-
         for cluster_name, indicator_dict in tree_data.items():
             cluster_id = get_cluster_id(cluster_name)
             indicator_ids = []
@@ -340,13 +371,6 @@ def get_node_single_data():
                     node_ids = []
                     for node_name in node_dict.keys():
                         node_ids.append(get_node_id(ip, node_name, cluster_id))
-
-
-
-        result_list = []
-        for item in result:
-            result_list.append(item.to_json())
-        print(result_list)
 
     result_list = single_result_process(result)
 
@@ -418,5 +442,3 @@ def get_node_multiple_data():
     result_list = multiple_result_process(result)
 
     return jsonify(result_list)
-
-
