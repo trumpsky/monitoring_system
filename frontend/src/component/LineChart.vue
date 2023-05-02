@@ -29,6 +29,12 @@ export default {
         },
         toolbox: {
           feature: {
+            dataZoom:{
+              title:{
+                zoom: "缩放",
+                back: "还原"
+              }
+            },
             dataView: {
               readOnly: true,
               buttonColor: "rgb(30,128,255)",
@@ -56,17 +62,6 @@ export default {
         yAxis: {
           type: "value",
         },
-        dataZoom: [
-          {
-            type: "inside",
-            start: 0,
-            end: 100,
-          },
-          {
-            start: 0,
-            end: 20,
-          },
-        ],
         series: this.series,
       };
     },
@@ -75,6 +70,14 @@ export default {
     drawLine() {
       let chart = this.$echarts.init(this.$refs.chart);
       chart.setOption(this.option);
+      chart.on('datazoom',(params)=>{
+        const startValue = this.$moment(this.data[params.batch[0].startValue].time * 1000).format("YYYY-MM-DD HH:mm")
+        const endValue =  this.$moment(this.data[params.batch[0].endValue].time * 1000).format("YYYY-MM-DD HH:mm")
+        let time = []
+        time.push(startValue)
+        time.push(endValue)
+        this.$emit("datazoom",time)
+      })
     },
     refreshData() {
       const keys = Object.keys(this.propsData);
@@ -88,6 +91,9 @@ export default {
             smooth: true,
           });
         }
+      }
+      if(this.moduleName.length === 0){
+        this.moduleName = "test123456789012345678123456"
       }
       console.log(this.series);
       this.data = this.propsData[keys[1]];

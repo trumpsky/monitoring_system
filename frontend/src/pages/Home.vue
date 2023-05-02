@@ -13,7 +13,7 @@
         </el-header>
         <el-main>
           <div class="main-information">
-            <router-view :initialData="initialData"></router-view>
+            <router-view :initialData="initialData" @datazoom="refreshData"></router-view>
           </div>
         </el-main>
         <el-footer>
@@ -36,75 +36,101 @@ export default {
     return {
       showComponent: false,
       initialData: [],
+      selectPath:[],
+      url: this.getPostPath()
     };
   },
   methods: {
     change(val) {
       this.showComponent = val == 2;
     },
-    getChartsData(data) {
-      console.log(data);
+    refreshData(data){
       const params = new URLSearchParams();
-      params.append("data",JSON.stringify(data))
-      params.append("start_time","1970/1/1 00:00")
-      params.append("end_time","2023/05/01 22.37")
+      params.append("data",JSON.stringify(this.selectPath))
+      params.append("start_time",data[0])
+      params.append("end_time",data[1])
       this.$http
-        .post("http://localhost:5000/dataShow/getClusterData", params)
+        .post(this.url, params)
         .then((res) => {
-          console.log(res.data)
+          console.log(res.data.result_list)
         });
-      // this.initialData = [
-      //   {
-      //     indicator: "'elasticsearch_cluster_health_active_shards'",
-      //     "master-vm-01": [
-      //       {
-      //         time: 1681292087,
-      //         value: 2038520.0,
-      //       },
-      //       {
-      //         time: 1681292087,
-      //         value: 2038520.0,
-      //       },
-      //       {
-      //         time: 1681292087,
-      //         value: 2038520.0,
-      //       },
-      //       {
-      //         time: 1681292087,
-      //         value: 2038520.0,
-      //       },
-      //       {
-      //         time: 1681292087,
-      //         value: 2038520.0,
-      //       },
-      //     ],
-      //     "master-vm-02": [
-      //       {
-      //         time: 1681292087,
-      //         value: 2038520.0,
-      //       },
-      //       {
-      //         time: 1681292087,
-      //         value: 2038520.0,
-      //       },
-      //       {
-      //         time: 1681292087,
-      //         value: 2038520.0,
-      //       },
-      //       {
-      //         time: 1681292087,
-      //         value: 2038520.0,
-      //       },
-      //       {
-      //         time: 1681292087,
-      //         value: 2038520.0,
-      //       },
-      //     ],
-      //   },
-      // ];
+    },
+    getPostPath(){
+      switch (this.$store.getters.getObservedState) {
+        case 'cluster':
+          return "http://localhost:5000/dataShow/getClusterData"
+        case 'nodeSingle':
+          return "http://localhost:5000/dataShow/getNodeSingleData"
+        case 'nodeMultiple':
+          return "http://localhost:5000/dataShow/getNodeMultipleData"
+      }
+    },
+    getChartsData(data) {
+      this.selectPath = data
+      // const params = new URLSearchParams();
+      // params.append("data",JSON.stringify(data))
+      // params.append("start_time","1970/1/1 00:00")
+      // params.append("end_time","2023/05/01 22:37")
+      // this.$http
+      //   .post(this.url, params)
+      //   .then((res) => {
+      //     console.log(res.data.result_list)
+      //     this.initialData = res.data.result_list
+      //   });
+      this.initialData = [
+        {
+          indicator: "'elasticsearch_cluster_health_active_shards'",
+          "master-vm-01": [
+            {
+              time: 1681292087,
+              value: 2038520.0,
+            },
+            {
+              time: 1681292087,
+              value: 2038520.0,
+            },
+            {
+              time: 1681292087,
+              value: 2038520.0,
+            },
+            {
+              time: 1681292087,
+              value: 2038520.0,
+            },
+            {
+              time: 1681292087,
+              value: 2038520.0,
+            },
+          ],
+          "master-vm-02": [
+            {
+              time: 1681292087,
+              value: 2038520.0,
+            },
+            {
+              time: 1681292087,
+              value: 2038520.0,
+            },
+            {
+              time: 1681292087,
+              value: 2038520.0,
+            },
+            {
+              time: 1681292087,
+              value: 2038520.0,
+            },
+            {
+              time: 1681292087,
+              value: 2038520.0,
+            },
+          ],
+        },
+      ];
     },
   },
-  mounted() {},
+  mounted() {
+
+  },
 };
 </script>
 

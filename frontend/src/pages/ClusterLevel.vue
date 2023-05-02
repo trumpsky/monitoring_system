@@ -1,6 +1,6 @@
 <template>
   <div>
-    <line-chart v-for="(item, index) in initialData" :moduleName="item.indicator" :key="index" :propsData="item"></line-chart>
+    <line-chart v-for="(item, index) in initialData" :moduleName="item.indicator" :key="index" :propsData="item" @datazoom="pushTime"></line-chart>
   </div>
 </template>
 
@@ -22,6 +22,9 @@ export default {
         chartArray.push(chart)
       }
       this.$echarts.connect(chartArray)
+    },
+    pushTime(data){
+      this.$emit("datazoom",data)
     }
   },
   mounted() {
