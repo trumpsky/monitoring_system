@@ -1,6 +1,6 @@
 <template>
   <div class="about">
-    <div ref="chart" style="width: 600px; height: 400px"></div>
+    <div ref="chart" style="width: 800px; height: 600px"></div>
   </div>
 </template>
   
@@ -31,8 +31,11 @@ export default {
           feature: {
             dataZoom:{
               title:{
-                zoom: "缩放",
-                back: "还原"
+                zoom: "",
+                back: ""
+              },
+              iconStyle: {
+                opacity: 0
               }
             },
             dataView: {
@@ -69,6 +72,11 @@ export default {
     drawLine() {
       let chart = this.$echarts.init(this.$refs.chart);
       chart.setOption(this.option);
+      chart.dispatchAction({
+        type: "takeGlobalCursor",
+        key: "dataZoomSelect",
+        dataZoomSelectActive: true
+      })
       chart.on('datazoom',(params)=>{
         const startValue = this.time[params.batch[0].startValue]
         const endValue =  this.time[params.batch[0].endValue]

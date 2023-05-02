@@ -25,6 +25,9 @@ export default {
     },
     pushTime(data){
       this.$emit("datazoom",data)
+    },
+    refreshTime(data){
+      console.log(data)
     }
   },
   mounted() {

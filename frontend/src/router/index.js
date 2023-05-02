@@ -35,7 +35,7 @@ export default new Router({
         },
         {
           path: "/menu/2-3",
-          component: () => import('@/pages/NodeMultipleLevel')
+          component: () => import('@/pages/ClusterLevel')
         },
         {
           path: "/menu/3-1",

@@ -49,7 +49,7 @@ export default {
       params.append("start_time",data[0])
       params.append("end_time",data[1])
       this.$http
-        .post("http://localhost:5000/dataShow/getClusterData", params)
+        .post(this.url, params)
         .then((res) => {
           console.log(res.data.result_list)
           this.initialData = res.data.result_list
@@ -73,16 +73,24 @@ export default {
       params.append("start_time","2023/04/01 00:00")
       params.append("end_time","2023/05/01 22:37")
       this.$http
-        .post("http://localhost:5000/dataShow/getNodeSingleData", params)
+        .post(this.url, params)
         .then((res) => {
-          console.log(res.data.result_list)
           this.initialData = res.data.result_list
         });
         console.log(this.initialData)
     },
   },
+  watch: {
+    "$store.getters.getObservedState":{
+        deep: true,
+				handler(){
+          this.url = this.getPostPath()
+          this.initialData = []
+				}
+			}
+  },
   mounted() {
-
+    this.url = this.getPostPath()
   },
 };
 </script>

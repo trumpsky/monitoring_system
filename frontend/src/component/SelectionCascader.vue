@@ -7,7 +7,7 @@
       :show-all-levels="false"
       clearable
       collapse-tags
-      style="width: 250px"
+      style="width: 350px"
     ></el-cascader>
     <el-button icon="el-icon-search" circle @click="getItems"></el-button>
   </div>
