@@ -1,9 +1,7 @@
 import json
 from flask import Blueprint, jsonify, request
-from model import User, ClusterData, Cluster, Indicator, Node, NodeSingleData, Disk, NodeMultipleData
-import json
+from model import ClusterData, Cluster, Indicator, Node, NodeSingleData, Disk, NodeMultipleData
 import helper.data_process as dp
-from sqlalchemy import distinct
 
 ds = Blueprint("data_show", __name__)
 
@@ -20,122 +18,6 @@ def disk_id_to_nodename_ip_diskname(disk_id):
     cluster_name = cluster_id_to_name(disk.cluster_id)
     disk_information = cluster_name + "-" + disk.ip + "-" + disk.node_name + "-" + disk.disk_name
     return disk_information
-
-
-@ds.route("/login/", strict_slashes=False, methods=["POST", "GET"])
-def login():
-    user_list = []
-    users = User.query.all()
-    for user in users:
-        user_list.append(user.to_json())
-
-    return jsonify(user_list=user_list)
-
-
-@ds.route("/index", strict_slashes=False, methods=["POST", "GET"])
-def index():
-    get_data = request.form["test"]
-    json_data = json.loads(get_data)
-    print(json_data)
-
-    print(type(get_data))
-    print(json_data[0].get("value"))
-    return jsonify(json_data)
-
-
-def list_to_tree(json_data):
-    my_tree = dp.MyTree()
-    my_tree.insert_list_to_tree(json_data)
-    return my_tree.tree
-
-
-@ds.route("/getIndicatorName", strict_slashes=False, methods=["POST", "GET"])
-def get_indicator_name():
-    mode = request.form["mode"]
-    if mode == "cluster":
-        data = ClusterData.query.with_entities(ClusterData.indicator_id).all()
-    elif mode == 'nodeSingle':
-        data = NodeSingleData.query.with_entities(NodeSingleData.indicator_id).all()
-    else:
-        data = NodeMultipleData.query.with_entities(NodeMultipleData.indicator_id).all()
-    data = list(set(data))
-    data = sorted(list(map(lambda x: x[0], data)))
-    indicators = []
-    for item in data:
-        temp = Indicator.query.filter(Indicator.indicator_id == item).all()
-        for single in temp:
-            single = single.to_json()
-            single["value"] = single.pop("indicator_id")
-            single["label"] = single.pop("indicator_name")
-            indicators.append(single)
-    return jsonify(indicators=indicators)
-
-
-@ds.route("/clusterName", strict_slashes=False, methods=["POST", "GET"])
-def cluster_name():
-    cluster = []
-    data = Cluster.query.all()
-    for item in data:
-        item = item.to_json()
-        item["value"] = item.pop("cluster_id")
-        item["label"] = item.pop("cluster_name")
-        cluster.append(item)
-    return jsonify(cluster=cluster)
-
-
-@ds.route("/getNodeIP", strict_slashes=False, methods=["POST", "GET"])
-def get_node_ip():
-    cluster_name = request.form["cluster_name"]
-    cluster_id = Cluster.query.filter(Cluster.cluster_name == cluster_name).with_entities(Cluster.cluster_id).all()
-    cluster_id = list(map(lambda x: x[0], cluster_id))
-    data = Node.query.filter(Node.cluster_id == cluster_id[0]).with_entities(Node.ip).all()
-    data = list(set(data))
-    data = sorted(list(map(lambda x: x[0], data)))
-    node_ip = []
-    for item in data:
-        temp = dict()
-        temp["value"] = item
-        temp["label"] = item
-        node_ip.append(temp)
-    return jsonify(node_ip=node_ip)
-
-
-@ds.route("/getNodeName", strict_slashes=False, methods=["POST", "GET"])
-def get_node_name():
-    cluster_name = request.form["cluster_name"]
-    node_ip = request.form["node_ip"]
-    cluster_id = Cluster.query.filter(Cluster.cluster_name == cluster_name).with_entities(Cluster.cluster_id).all()
-    cluster_id = list(map(lambda x: x[0], cluster_id))
-    data = Node.query.filter(Node.cluster_id == cluster_id[0], Node.ip == node_ip).with_entities(Node.node_name).all()
-    data = list(set(data))
-    data = sorted(list(map(lambda x: x[0], data)))
-    node_name = []
-    for item in data:
-        temp = dict()
-        temp["value"] = item
-        temp["label"] = item
-        node_name.append(temp)
-    return jsonify(node_name=node_name)
-
-
-@ds.route("/getDiskName", strict_slashes=False, methods=["POST", "GET"])
-def get_disk_name():
-    cluster_name = request.form["cluster_name"]
-    node_ip = request.form["node_ip"]
-    node_name = request.form["node_name"]
-    cluster_id = Cluster.query.filter(Cluster.cluster_name == cluster_name).with_entities(Cluster.cluster_id).all()
-    cluster_id = list(map(lambda x: x[0], cluster_id))
-    data = Disk.query.filter(Disk.cluster_id == cluster_id[0], Disk.ip == node_ip,
-                             Disk.node_name == node_name).with_entities(Disk.disk_name).all()
-    data = list(set(data))
-    data = sorted(list(map(lambda x: x[0], data)))
-    disk_name = []
-    for item in data:
-        temp = dict()
-        temp["value"] = item
-        temp["label"] = item
-        disk_name.append(temp)
-    return jsonify(disk_name=disk_name)
 
 
 def get_cluster_id(name):
@@ -175,6 +57,17 @@ def get_disk_id(cluster_id, node_ip, node_name, disk_name):
                                Disk.node_name == node_name,
                                Disk.disk_name == disk_name).first()
     return result.disk_id
+
+
+def load_request():
+    start_time = request.form["start_time"]
+    end_time = request.form["end_time"]
+    end_time = dp.datetime_to_timestamp(end_time)
+    start_time = dp.datetime_to_timestamp(start_time)
+    info = request.form["data"]
+    list_data = json.loads(info)
+    tree_data = dp.list_to_tree(list_data)
+    return start_time, end_time, tree_data
 
 
 def cluster_data_process(result):
@@ -272,14 +165,8 @@ def get_cluster_data():
         result_list = cluster_data_process(result)
 
     if request.method == "POST":
-        start_time = request.form["start_time"]
-        end_time = request.form["end_time"]
-        end_time = dp.datetime_to_timestamp(end_time)
-        start_time = dp.datetime_to_timestamp(start_time)
-        info = request.form["data"]
         request_number = 150
-        list_data = json.loads(info)
-        tree_data = list_to_tree(list_data)
+        start_time, end_time, tree_data = load_request()
         result = []
 
         for cluster_name, indicator_dict in tree_data.items():
@@ -302,7 +189,6 @@ def get_cluster_data():
         result_list = []
         for item in result:
             result_list.append(item.to_json())
-        print(result_list)
         result_list = cluster_data_process(result_list)
 
     return jsonify(result_list=result_list)
@@ -362,8 +248,6 @@ def single_result_process(result):
 @ds.route("/getNodeSingleData", strict_slashes=False, methods=["POST", "GET"])
 def get_node_single_data():
     if request.method == "GET":
-        # start_time = request.form["start_time"]
-        # end_time = request.form["end_time"]
         end_time = "2023/04/12 17:35"
         start_time = "2023/04/01 00:00"
         start_time = dp.datetime_to_timestamp(start_time)
@@ -383,16 +267,8 @@ def get_node_single_data():
         result = dp.limit_data(result, result_number, limit_number=request_number)
 
     if request.method == "POST":
-        # start_time = request.form["start_time"]
-        # end_time = request.form["end_time"]
-        end_time = "2023/04/12 22:35"
-        start_time = "2023/04/01 00:00"
-        end_time = dp.datetime_to_timestamp(end_time)
-        start_time = dp.datetime_to_timestamp(start_time)
-        info = request.form["data"]
-        request_number = 100
-        list_data = json.loads(info)
-        tree_data = list_to_tree(list_data)
+        request_number = 40
+        start_time, end_time, tree_data = load_request()
         result = []
 
         for cluster_name, indicator_dict in tree_data.items():
@@ -411,9 +287,9 @@ def get_node_single_data():
                         NodeSingleData.node_id,
                         NodeSingleData.time).all()
                     result_number = NodeSingleData.query.filter(NodeSingleData.time > start_time,
-                                                              NodeSingleData.time < end_time,
-                                                              NodeSingleData.indicator_id == indicator_id,
-                                                              NodeSingleData.node_id.in_(node_ids)).count()
+                                                                NodeSingleData.time < end_time,
+                                                                NodeSingleData.indicator_id == indicator_id,
+                                                                NodeSingleData.node_id.in_(node_ids)).count()
                     result_item = dp.limit_data(result_item, result_number,
                                                 limit_number=request_number * len(node_ids))
                     result.extend(result_item)
@@ -477,8 +353,6 @@ def multiple_result_process(result):
 @ds.route("/getNodeMultipleData", strict_slashes=False, methods=["POST", "GET"])
 def get_node_multiple_data():
     if request.method == "GET":
-        # start_time = request.form["start_time"]
-        # end_time = request.form["end_time"]
         end_time = "2023/04/12 17:35"
         start_time = "2023/04/01 00:00"
         start_time = dp.datetime_to_timestamp(start_time)
@@ -500,16 +374,8 @@ def get_node_multiple_data():
         result = dp.limit_data(result, result_number, limit_number=request_number)
 
     if request.method == "POST":
-        # start_time = request.form["start_time"]
-        # end_time = request.form["end_time"]
-        end_time = "2023/04/12 17:35"
-        start_time = "2023/04/01 00:00"
-        end_time = dp.datetime_to_timestamp(end_time)
-        start_time = dp.datetime_to_timestamp(start_time)
-        info = request.form["data"]
-        request_number = 2
-        list_data = json.loads(info)
-        tree_data = list_to_tree(list_data)
+        request_number = 50
+        start_time, end_time, tree_data = load_request()
         result = []
 
         for cluster_name, indicator_dict in tree_data.items():
@@ -529,14 +395,13 @@ def get_node_multiple_data():
                             NodeMultipleData.disk_id,
                             NodeMultipleData.time).all()
                         result_number = NodeMultipleData.query.filter(NodeMultipleData.time > start_time,
-                                                                    NodeMultipleData.time < end_time,
-                                                                    NodeMultipleData.indicator_id == indicator_id,
-                                                                    NodeMultipleData.disk_id.in_(disk_ids)).count()
+                                                                      NodeMultipleData.time < end_time,
+                                                                      NodeMultipleData.indicator_id == indicator_id,
+                                                                      NodeMultipleData.disk_id.in_(disk_ids)).count()
                         result_item = dp.limit_data(result_item, result_number,
                                                     limit_number=request_number * len(disk_ids))
                         result.extend(result_item)
 
     result_list = multiple_result_process(result)
-    print(result_list)
 
     return jsonify(result_list=result_list)

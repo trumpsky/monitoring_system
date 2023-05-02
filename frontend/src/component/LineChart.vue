@@ -1,9 +1,9 @@
 <template>
   <div class="about">
-    <div ref="chart" style="width: 800px; height: 600px"></div>
+    <div ref="chart" style="width: 1200px; height: 400px"></div>
   </div>
 </template>
-  
+
 <script>
 export default {
   props: ["moduleName", "propsData"],
@@ -115,4 +115,3 @@ export default {
   },
 };
 </script>
-  
