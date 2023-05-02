@@ -223,13 +223,10 @@ def get_cluster_data():
         result_list = []
         for item in result:
             result_list.append(item.to_json())
-        return jsonify(result_list=result_list)
 
     if request.method == "POST":
-        # start_time = request.form["start_time"]
-        # end_time = request.form["end_time"]
-        end_time = "2023/04/12 17:35"
-        start_time = "2023/04/01 00:00"
+        start_time = request.form["start_time"]
+        end_time = request.form["end_time"]
         end_time = dp.datetime_to_timestamp(end_time)
         start_time = dp.datetime_to_timestamp(start_time)
         info = request.form["data"]
@@ -260,7 +257,7 @@ def get_cluster_data():
             result_list.append(item.to_json())
         print(result_list)
 
-        return jsonify(result_list=result_list)
+    return jsonify(result_list=result_list)
 
 
 
@@ -313,18 +310,43 @@ def get_node_single_data():
         indicator_ids = [5, 6]
         request_number = 20
 
-    if request.method == "POST":
-        pass
+        result = NodeSingleData.query.filter(NodeSingleData.time > start_time,
+                                             NodeSingleData.time < end_time,
+                                             NodeSingleData.node_id).order_by(NodeSingleData.indicator_id,
+                                                                              NodeSingleData.node_id,
+                                                                              NodeSingleData.time).all()
+        result_number = NodeSingleData.query.filter(NodeSingleData.time > start_time,
+                                                    NodeSingleData.time < end_time,
+                                                    NodeSingleData.node_id).count()
+        result = dp.limit_data(result, result_number, limit_number=request_number)
 
-    result = NodeSingleData.query.filter(NodeSingleData.time > start_time,
-                                         NodeSingleData.time < end_time,
-                                         NodeSingleData.node_id).order_by(NodeSingleData.indicator_id,
-                                                                          NodeSingleData.node_id,
-                                                                          NodeSingleData.time).all()
-    result_number = NodeSingleData.query.filter(NodeSingleData.time > start_time,
-                                                NodeSingleData.time < end_time,
-                                                NodeSingleData.node_id).count()
-    result = dp.limit_data(result, result_number, limit_number=request_number)
+    if request.method == "POST":
+        start_time = request.form["start_time"]
+        end_time = request.form["end_time"]
+        end_time = dp.datetime_to_timestamp(end_time)
+        start_time = dp.datetime_to_timestamp(start_time)
+        info = request.form["data"]
+        request_number = 2
+        list_data = json.loads(info)
+        tree_data = list_to_tree(list_data)
+        result = []
+
+
+        for cluster_name, indicator_dict in tree_data.items():
+            cluster_id = get_cluster_id(cluster_name)
+            indicator_ids = []
+            for indicator_name, ip_dict in indicator_dict.items():
+                for ip, node_dict in ip_dict.items():
+                    node_ids = []
+                    for node_name in node_dict.keys():
+                        node_ids.append(get_node_id(ip, node_name, cluster_id))
+
+
+
+        result_list = []
+        for item in result:
+            result_list.append(item.to_json())
+        print(result_list)
 
     result_list = single_result_process(result)
 
@@ -398,9 +420,3 @@ def get_node_multiple_data():
     return jsonify(result_list)
 
 
-def to_json(self):
-    """将实例对象转化为json"""
-    item = self.__dict__
-    if "_sa_instance_state" in item:
-        del item["_sa_instance_state"]
-    return item
