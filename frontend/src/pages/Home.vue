@@ -73,7 +73,7 @@ export default {
       params.append("start_time","2023/04/01 00:00")
       params.append("end_time","2023/05/01 22:37")
       this.$http
-        .post("http://localhost:5000/dataShow/getClusterData", params)
+        .post("http://localhost:5000/dataShow/getNodeMultipleData", params)
         .then((res) => {
           console.log(res.data.result_list)
           this.initialData = res.data.result_list

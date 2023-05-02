@@ -58,3 +58,7 @@ if __name__ == '__main__':
 # {'cc-cc408-hya': {'elasticsearch_os_load5': {'9.9.2.153': {'data-node-01': {}, 'data-node-06': {}}, '9.9.2.154': {'data-node-12': {}}}, 'elasticsearch_transport_rx_size_bytes_total': {
 # '9.9.2.153': {'data-node-01': {}}}}} !!!!!!!!!!!!!!!!
 
+# {'cc-cc408-hya': {'elasticsearch_filesystem_data_available_bytes': {'9.9.2.153': {'data-node-01': {'/srv/data01 (/dev/sdb)': {}, '/srv/data02 (/dev/sdc)': {}}, 'data-node-06': {'/srv/d
+# ata05 (/dev/sdf)': {}, '/srv/data06 (/dev/sdg)': {}}}, '9.9.2.154': {'data-node-02': {'/srv/data01 (/dev/sdb)': {}}}}}}
+
+
