@@ -10,14 +10,15 @@ ds = Blueprint("data_show", __name__)
 
 def node_id_to_name_ip(node_id):
     node = Node.query.filter(Node.node_id == node_id).first()
-    cluster_name=cluster_id_to_name(node.cluster_id)
-    node_information=cluster_name+"-"+node.ip+"-"+node.node_name
+    cluster_name = cluster_id_to_name(node.cluster_id)
+    node_information = cluster_name + "-" + node.ip + "-" + node.node_name
     return node_information
 
+
 def disk_id_to_nodename_ip_diskname(disk_id):
-    disk=Disk.query.filter(Disk.disk_id==disk_id).first()
-    cluster_name=cluster_id_to_name(disk.cluster_id)
-    disk_information=cluster_name+"-"+disk.ip+"-"+disk.node_name+"-"+disk.disk_name
+    disk = Disk.query.filter(Disk.disk_id == disk_id).first()
+    cluster_name = cluster_id_to_name(disk.cluster_id)
+    disk_information = cluster_name + "-" + disk.ip + "-" + disk.node_name + "-" + disk.disk_name
     return disk_information
 
 
@@ -316,41 +317,38 @@ def single_result_process(result):
     point_list = []
     for i in range(len(result)):
         if i == 0:
-            node_id = result[i]['node_id']
-            indicator_id = result[i]['indicator_id']
+            node_id = result[i].node_id
+            indicator_id = result[i].indicator_id
             indicator_dict["indicator"] = indicator_id_to_name(indicator_id)
 
         # 变indicator
-        if node_id != result[i]['node_id'] and indicator_id!=result[i]['indicator_id']:
-            #1.把集群：【point_list】加到indicator_dict
-            indicator_dict[node_id_to_name_ip(node_id)]=point_list
-            #2.把indicator_dict append到result_list
+        if node_id != result[i].node_id and indicator_id != result[i].indicator_id:
+            # 1.把集群：【point_list】加到indicator_dict
+            indicator_dict[node_id_to_name_ip(node_id)] = point_list
+            # 2.把indicator_dict append到result_list
             result_list.append(indicator_dict)
-            #3.更新列表、字典，cluster id，indicator id
-            point_list=[]
-            indicator_dict={}
-            node_id=result[i]['node_id']
-            indicator_id=result[i]['indicator_id']
-            #4.把新的indicator_dict里面增加第一行
+            # 3.更新列表、字典，cluster id，indicator id
+            point_list = []
+            indicator_dict = {}
+            node_id = result[i].node_id
+            indicator_id = result[i].indicator_id
+            # 4.把新的indicator_dict里面增加第一行
             # indicator：xxx
-            indicator_dict["indicator"]=indicator_id_to_name(indicator_id)
-            node_id = result[i]['node_id']
-            indicator_id = result[i]['indicator_id']
+            indicator_dict["indicator"] = indicator_id_to_name(indicator_id)
+            node_id = result[i].node_id
+            indicator_id = result[i].indicator_id
             indicator_dict["indicator"] = indicator_id_to_name(indicator_id)
 
-        #只变cluster
-        if node_id != result[i]['node_id'] and indicator_id==result[i]['indicator_id']:
-            indicator_dict[node_id_to_name_ip(node_id)]=point_list
+        # 只变cluster
+        if node_id != result[i].node_id and indicator_id == result[i].indicator_id:
+            indicator_dict[node_id_to_name_ip(node_id)] = point_list
             # indicator_dict["cc-cc408-hya"] = point_list
-            node_id = result[i]['node_id']
+            node_id = result[i].node_id
             point_list = []
 
-
-
-
         # 点的字典
-        point_dict["time"] = result[i]['time']
-        point_dict["value"] = result[i]['value']
+        point_dict["time"] = result[i].time
+        point_dict["value"] = result[i].value
         point_list.append(point_dict)
         point_dict = {}
 
@@ -414,14 +412,12 @@ def get_node_single_data():
                         NodeSingleData.time).all()
                     result.extend(result_item)
 
-    # result_list = single_result_process(result)
-    # print(result_list, "!!!!!")
-    result_list = []
-    for item in result:
-        result_list.append(item.to_json())
-    print(result_list)
+    result_list = single_result_process(result)
+    # result_list = []
+    # for item in result:
+    #     result_list.append(item.to_json())
+    # print(result_list)
     return jsonify(result_list=result_list)
-
 
 
 def multiple_result_process(result):
@@ -433,43 +429,40 @@ def multiple_result_process(result):
     point_list = []
     for i in range(len(result)):
         if i == 0:
-            disk_id = result[i]['disk_id']
-            indicator_id = result[i]['indicator_id']
+            disk_id = result[i].disk_id
+            indicator_id = result[i].indicator_id
             indicator_dict["indicator"] = indicator_id_to_name(indicator_id)
 
         # 变indicator
-        if disk_id != result[i]['disk_id'] and indicator_id!=result[i]['indicator_id']:
-            #1.把集群：【point_list】加到indicator_dict
-            indicator_dict[disk_id_to_nodename_ip_diskname(disk_id)]=point_list
-            #2.把indicator_dict append到result_list
+        if disk_id != result[i].disk_id and indicator_id != result[i].indicator_id:
+            # 1.把集群：【point_list】加到indicator_dict
+            indicator_dict[disk_id_to_nodename_ip_diskname(disk_id)] = point_list
+            # 2.把indicator_dict append到result_list
             result_list.append(indicator_dict)
-            #3.更新列表、字典，cluster id，indicator id
-            point_list=[]
-            indicator_dict={}
-            disk_id=result[i]['disk_id']
-            indicator_id=result[i]['indicator_id']
-            #4.把新的indicator_dict里面增加第一行
+            # 3.更新列表、字典，cluster id，indicator id
+            point_list = []
+            indicator_dict = {}
+            disk_id = result[i].disk_id
+            indicator_id = result[i].indicator_id
+            # 4.把新的indicator_dict里面增加第一行
             # indicator：xxx
-            indicator_dict["indicator"]=indicator_id_to_name(indicator_id)
+            indicator_dict["indicator"] = indicator_id_to_name(indicator_id)
 
-        #只变cluster
-        if disk_id != result[i]['disk_id'] and indicator_id==result[i]['indicator_id']:
-            indicator_dict[disk_id_to_nodename_ip_diskname(disk_id)]=point_list
+        # 只变cluster
+        if disk_id != result[i].disk_id and indicator_id == result[i].indicator_id:
+            indicator_dict[disk_id_to_nodename_ip_diskname(disk_id)] = point_list
             # indicator_dict["cc-cc408-hya"] = point_list
-            disk_id = result[i]['disk_id']
+            disk_id = result[i].disk_id
             point_list = []
 
-
-
-
         # 点的字典
-        point_dict["time"] = result[i]['time']
-        point_dict["value"] = result[i]['value']
+        point_dict["time"] = result[i].time
+        point_dict["value"] = result[i].value
         point_list.append(point_dict)
         point_dict = {}
 
         if i == len(result) - 1:
-            indicator_dict[disk_id_to_nodename_ip_diskname(disk_id)]=point_list
+            indicator_dict[disk_id_to_nodename_ip_diskname(disk_id)] = point_list
             result_list.append(indicator_dict)
 
     return result_list
