@@ -385,12 +385,12 @@ def get_node_single_data():
     if request.method == "POST":
         # start_time = request.form["start_time"]
         # end_time = request.form["end_time"]
-        end_time = "2023/04/12 17:35"
+        end_time = "2023/04/12 22:35"
         start_time = "2023/04/01 00:00"
         end_time = dp.datetime_to_timestamp(end_time)
         start_time = dp.datetime_to_timestamp(start_time)
         info = request.form["data"]
-        request_number = 2
+        request_number = 100
         list_data = json.loads(info)
         tree_data = list_to_tree(list_data)
         result = []
@@ -410,6 +410,12 @@ def get_node_single_data():
                         NodeSingleData.indicator_id,
                         NodeSingleData.node_id,
                         NodeSingleData.time).all()
+                    result_number = NodeSingleData.query.filter(NodeSingleData.time > start_time,
+                                                              NodeSingleData.time < end_time,
+                                                              NodeSingleData.indicator_id == indicator_id,
+                                                              NodeSingleData.node_id.in_(node_ids)).count()
+                    result_item = dp.limit_data(result_item, result_number,
+                                                limit_number=request_number * len(node_ids))
                     result.extend(result_item)
 
     result_list = single_result_process(result)
@@ -522,6 +528,12 @@ def get_node_multiple_data():
                             NodeMultipleData.indicator_id,
                             NodeMultipleData.disk_id,
                             NodeMultipleData.time).all()
+                        result_number = NodeMultipleData.query.filter(NodeMultipleData.time > start_time,
+                                                                    NodeMultipleData.time < end_time,
+                                                                    NodeMultipleData.indicator_id == indicator_id,
+                                                                    NodeMultipleData.disk_id.in_(disk_ids)).count()
+                        result_item = dp.limit_data(result_item, result_number,
+                                                    limit_number=request_number * len(disk_ids))
                         result.extend(result_item)
 
     result_list = multiple_result_process(result)
