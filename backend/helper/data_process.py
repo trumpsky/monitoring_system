@@ -45,6 +45,10 @@ class MyTree:
         for onepoint in pointlist:
             self.append_Point_to_tree(onepoint)
 
+def list_to_tree(json_data):
+    my_tree = MyTree()
+    my_tree.insert_list_to_tree(json_data)
+    return my_tree.tree
 
 def find_muldule_or_package():
     for path in sys.path:
