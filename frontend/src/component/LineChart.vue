@@ -6,14 +6,15 @@
   
 <script>
 export default {
-  props: {
-    moduleName: String, //配合接口函数
-  },
+  props: ["moduleName", "propsData"],
   data() {
     return {
-      name: "集群层面",
+      name: this.$store.getters.getObservedState,
       isLoading: false,
-      data: this.refreshData(),
+      data: [],
+      series: [],
+      loadData: [],
+      nameList: [],
     };
   },
   computed: {
@@ -37,19 +38,20 @@ export default {
               title: "实时刷新",
               icon: "path://M 50 250 Q 100 150 150 250",
               onclick: function () {
-                this.isLoading = !this.isLoading
-                console.log(this.isLoading);
+                this.isLoading = !this.isLoading;
               },
             },
           },
         },
         title: {
           left: "center",
-          text: this.name + "-" + this.moduleName,
+          text: this.name + "-" + this.moduleName.slice(15, -1),
         },
         xAxis: {
           type: "category",
-          data: this.data.map((d) => d.time), // 将数据对象映射成数组
+          data: this.data.map((d) =>
+            this.$moment(d.time * 1000).format("YYYY-MM-DD HH:mm:ss")
+          ), // 将数据对象映射成数组
         },
         yAxis: {
           type: "value",
@@ -65,20 +67,7 @@ export default {
             end: 20,
           },
         ],
-        series: [
-          {
-            data: this.data.map((d) => d.value),
-            type: "line",
-            smooth: true, // 是否平滑
-            areaStyle: {},
-            markPoint: {
-              data: [
-                { type: "max", name: "最大值" },
-                { type: "min", name: "最小值" },
-              ],
-            },
-          },
-        ],
+        series: this.series,
       };
     },
   },
@@ -88,56 +77,29 @@ export default {
       chart.setOption(this.option);
     },
     refreshData() {
-      return [
-        {
-          time: "2023/4/12 21:15:00",
-          value: Math.random() * 300,
-        },
-        {
-          time: "2023/4/12 22:15:00",
-          value: Math.random() * 300,
-        },
-        {
-          time: "2023/4/12 23:15:00",
-          value: Math.random() * 300,
-        },
-        {
-          time: "2023/4/12 00:15:00",
-          value: Math.random() * 300,
-        },
-        {
-          time: "2023/4/12 01:15:00",
-          value: Math.random() * 300,
-        },
-        {
-          time: "2023/4/12 02:15:00",
-          value: Math.random() * 300,
-        },
-        {
-          time: "2023/4/12 03:15:00",
-          value: Math.random() * 300,
-        },
-        {
-          time: "2023/4/12 04:15:00",
-          value: Math.random() * 300,
-        },
-      ];
-    },
-    getName() {
-      let params = new URLSearchParams();
-      params.append("module", moduleName);
-      const url = "" + moduleName;
-      this.$https.post(url).then((res) => {
-        this.name = res.data.name;
-      });
-    },
+      const keys = Object.keys(this.propsData);
+      for (let item in keys) {
+        if (typeof this.propsData[keys[item]] != "string") {
+          this.loadData.push(this.propsData[keys[item]]);
+          this.series.push({
+            name: keys[item],
+            data: this.propsData[keys[item]].map((d) => d.value),
+            type: "line",
+            smooth: true,
+          });
+        }
+      }
+      console.log(this.series);
+      this.data = this.propsData[keys[1]];
+    }
   },
   mounted() {
+    this.refreshData();
     this.drawLine();
   },
   watch: {
     isLoading: function (val) {
-      if (val){
+      if (val) {
         this.data = this.refreshData();
       }
     },

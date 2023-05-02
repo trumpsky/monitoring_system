@@ -6,12 +6,14 @@
       </el-aside>
       <el-container>
         <el-header>
-          <selection-cascader :key="this.$store.getters.getObservedState" @submit="getChartsData"></selection-cascader>
+          <selection-cascader
+            :key="this.$store.getters.getObservedState"
+            @submit="getChartsData"
+          ></selection-cascader>
         </el-header>
         <el-main>
           <div class="main-information">
-            <cluster-level ref="cluster"></cluster-level>
-            <!-- <router-view></router-view> -->
+            <router-view :initialData="initialData"></router-view>
           </div>
         </el-main>
         <el-footer>
@@ -23,38 +25,87 @@
 </template>
 
 <script>
-import SelectionCascader from '../component/SelectionCascader.vue';
-import ShowFooter from '../component/ShowFooter.vue';
+import SelectionCascader from "../component/SelectionCascader.vue";
+import ShowFooter from "../component/ShowFooter.vue";
 import Sidebar from "../component/Sidebar";
 import ClusterLevel from "./ClusterLevel";
 
 export default {
-  components: { ClusterLevel, Sidebar, ShowFooter,  SelectionCascader, },
+  components: { ClusterLevel, Sidebar, ShowFooter, SelectionCascader },
   data() {
     return {
-      showComponent: false
-    }
+      showComponent: false,
+      initialData: [],
+    };
   },
   methods: {
     change(val) {
-      this.showComponent = (val == 2)
+      this.showComponent = val == 2;
     },
-    getChartsData(data){
-      console.log(data)
-      const params = new URLSearchParams();
-      params.append("data",JSON.stringify(data))
-      params.append("start_time","2023/04/01: 00:00")
-      params.append("end_time","2023/04/12 23:25")
-      this.$http
-        .post("http://localhost:5000/dataShow/getClusterData", params)
-        .then((res) => {
-          console.log()
-        });
-    }
+    getChartsData(data) {
+      console.log(data);
+      // const params = new URLSearchParams();
+      // params.append("data",JSON.stringify(data))
+      // params.append("start_time","1970/1/1 00:00")
+      // params.append("end_time","2023/05/01 22.37")
+      // this.$http
+      //   .post("http://localhost:5000/dataShow/getClusterData", params)
+      //   .then((res) => {
+      //     console.log()
+      //   });
+      this.initialData = [
+        {
+          indicator: "'elasticsearch_cluster_health_active_shards'",
+          "master-vm-01": [
+            {
+              time: 1681292087,
+              value: 2038520.0,
+            },
+            {
+              time: 1681292087,
+              value: 2038520.0,
+            },
+            {
+              time: 1681292087,
+              value: 2038520.0,
+            },
+            {
+              time: 1681292087,
+              value: 2038520.0,
+            },
+            {
+              time: 1681292087,
+              value: 2038520.0,
+            },
+          ],
+          "master-vm-02": [
+            {
+              time: 1681292087,
+              value: 2038520.0,
+            },
+            {
+              time: 1681292087,
+              value: 2038520.0,
+            },
+            {
+              time: 1681292087,
+              value: 2038520.0,
+            },
+            {
+              time: 1681292087,
+              value: 2038520.0,
+            },
+            {
+              time: 1681292087,
+              value: 2038520.0,
+            },
+          ],
+        },
+      ];
+    },
   },
-  mounted() {
-  },
-}
+  mounted() {},
+};
 </script>
 
 <style scoped>
@@ -63,7 +114,7 @@ export default {
   color: #fff;
   line-height: 60px;
   display: flex;
-  justify-content: flex-end
+  justify-content: flex-end;
 }
 
 .el-footer {
@@ -78,11 +129,12 @@ export default {
 }
 
 .el-main {
-  background-color: #E9EEF3;
+  background-color: #e9eef3;
   color: #333;
   height: 680px;
 }
 
 .main-information {
   overflow: auto;
-}</style>
+}
+</style>

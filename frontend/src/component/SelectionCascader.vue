@@ -115,7 +115,9 @@ export default {
       let result = []
       const pathSet = this.$refs.cascader.getCheckedNodes();
       for (let item in pathSet){
-        result.push(pathSet[item].pathLabels)
+        if(pathSet[item].pathLabels.length == pathSet[pathSet.length-1].pathLabels.length){
+          result.push(pathSet[item].pathLabels)
+        }
       }
       this.$emit("submit", result)
     }
