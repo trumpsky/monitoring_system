@@ -163,6 +163,24 @@ def get_cluster_data():
 
         indicator_ids = [1, 2]
 
+        result = ClusterData.query.filter(ClusterData.time > start_time,
+                                          ClusterData.time < end_time,
+                                          ClusterData.cluster_id.in_(cluster_ids),
+                                          ClusterData.indicator_id.in_(indicator_ids)).order_by(ClusterData.cluster_id,
+                                                                                                ClusterData.indicator_id,
+                                                                                                ClusterData.time).all()
+        result_number = ClusterData.query.filter(ClusterData.time > start_time,
+                                                 ClusterData.time < end_time,
+                                                 ClusterData.cluster_id.in_(cluster_ids),
+                                                 ClusterData.indicator_id.in_(indicator_ids)).count()
+
+        result = dp.limit_data(result, result_number, limit_number=request_number)
+
+        result_list = []
+        for item in result:
+            result_list.append(item.to_json())
+        return jsonify(result_list=result_list)
+
     if request.method == "POST":
         # start_time = request.form["start_time"]
         # end_time = request.form["end_time"]
@@ -192,32 +210,15 @@ def get_cluster_data():
                                                     ClusterData.cluster_id == cluster_id,
                                                     ClusterData.indicator_id.in_(indicator_ids)).count()
             result_item = dp.limit_data(result_item, result_number, limit_number=request_number*len(indicator_ids))
-            result.append(result_item)
-        query_result = str(result[0])
-        for i in result[1:]:
-            query_result += str(i)
-        print(query_result)
-        query_result = jsonify(result_list=query_result)
+            result.extend(result_item)
+        result_list = []
+        for item in result:
+            result_list.append(item.to_json())
+        print(result_list)
 
-        return query_result
+        return jsonify(result_list=result_list)
 
-    result = ClusterData.query.filter(ClusterData.time > start_time,
-                                      ClusterData.time < end_time,
-                                      ClusterData.cluster_id.in_(cluster_ids),
-                                      ClusterData.indicator_id.in_(indicator_ids)).order_by(ClusterData.cluster_id,
-                                                                                            ClusterData.indicator_id,
-                                                                                            ClusterData.time).all()
-    result_number = ClusterData.query.filter(ClusterData.time > start_time,
-                                             ClusterData.time < end_time,
-                                             ClusterData.cluster_id.in_(cluster_ids),
-                                             ClusterData.indicator_id.in_(indicator_ids)).count()
 
-    result = dp.limit_data(result, result_number, limit_number=request_number)
-
-    result_list = []
-    for item in result:
-        result_list.append(item.to_json())
-    return jsonify(result_list=result_list)
 
 
 def single_result_process(result):

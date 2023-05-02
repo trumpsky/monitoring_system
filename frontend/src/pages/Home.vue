@@ -44,64 +44,64 @@ export default {
     },
     getChartsData(data) {
       console.log(data);
-      // const params = new URLSearchParams();
-      // params.append("data",JSON.stringify(data))
-      // params.append("start_time","1970/1/1 00:00")
-      // params.append("end_time","2023/05/01 22.37")
-      // this.$http
-      //   .post("http://localhost:5000/dataShow/getClusterData", params)
-      //   .then((res) => {
-      //     console.log()
-      //   });
-      this.initialData = [
-        {
-          indicator: "'elasticsearch_cluster_health_active_shards'",
-          "master-vm-01": [
-            {
-              time: 1681292087,
-              value: 2038520.0,
-            },
-            {
-              time: 1681292087,
-              value: 2038520.0,
-            },
-            {
-              time: 1681292087,
-              value: 2038520.0,
-            },
-            {
-              time: 1681292087,
-              value: 2038520.0,
-            },
-            {
-              time: 1681292087,
-              value: 2038520.0,
-            },
-          ],
-          "master-vm-02": [
-            {
-              time: 1681292087,
-              value: 2038520.0,
-            },
-            {
-              time: 1681292087,
-              value: 2038520.0,
-            },
-            {
-              time: 1681292087,
-              value: 2038520.0,
-            },
-            {
-              time: 1681292087,
-              value: 2038520.0,
-            },
-            {
-              time: 1681292087,
-              value: 2038520.0,
-            },
-          ],
-        },
-      ];
+      const params = new URLSearchParams();
+      params.append("data",JSON.stringify(data))
+      params.append("start_time","1970/1/1 00:00")
+      params.append("end_time","2023/05/01 22.37")
+      this.$http
+        .post("http://localhost:5000/dataShow/getClusterData", params)
+        .then((res) => {
+          console.log(res.data)
+        });
+      // this.initialData = [
+      //   {
+      //     indicator: "'elasticsearch_cluster_health_active_shards'",
+      //     "master-vm-01": [
+      //       {
+      //         time: 1681292087,
+      //         value: 2038520.0,
+      //       },
+      //       {
+      //         time: 1681292087,
+      //         value: 2038520.0,
+      //       },
+      //       {
+      //         time: 1681292087,
+      //         value: 2038520.0,
+      //       },
+      //       {
+      //         time: 1681292087,
+      //         value: 2038520.0,
+      //       },
+      //       {
+      //         time: 1681292087,
+      //         value: 2038520.0,
+      //       },
+      //     ],
+      //     "master-vm-02": [
+      //       {
+      //         time: 1681292087,
+      //         value: 2038520.0,
+      //       },
+      //       {
+      //         time: 1681292087,
+      //         value: 2038520.0,
+      //       },
+      //       {
+      //         time: 1681292087,
+      //         value: 2038520.0,
+      //       },
+      //       {
+      //         time: 1681292087,
+      //         value: 2038520.0,
+      //       },
+      //       {
+      //         time: 1681292087,
+      //         value: 2038520.0,
+      //       },
+      //     ],
+      //   },
+      // ];
     },
   },
   mounted() {},
