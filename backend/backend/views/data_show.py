@@ -130,6 +130,11 @@ def get_cluster_id(name):
     else:
         return 2
 
+def cluster_id_to_name(cluster_id):
+    if id==1:
+        return "cc-cc408-hya"
+    else:
+        return "cc-cc553-interestPrice"
 
 def get_node_id(node_ip, node_name, cluster_id):
     result = Node.query.filter(Node.cluster_id == cluster_id,
@@ -142,6 +147,9 @@ def get_indicator_id(name):
     result = Indicator.query.filter(Indicator.indicator_name == name).first()
     return result.indicator_id
 
+def indicator_id_to_name(indicator_id):
+    result = Indicator.query.filter(Indicator.indicator_id == indicator_id).first()
+    return result.indicator_name
 
 def get_disk_id(cluster_id, node_ip, node_name, disk_name):
     result = Disk.query.filter(Disk.cluster_id == cluster_id,
@@ -150,6 +158,42 @@ def get_disk_id(cluster_id, node_ip, node_name, disk_name):
                                Disk.disk_name == disk_name).first()
     return result.disk_id
 
+def cluster_data_process(result):
+    result_list = []
+    cluster_id = -1
+    indicator_id = -1
+    indicator_dict = {}
+    point_dict = {}
+    point_list = []
+    for i in range(len(result)):
+        if i == 0:
+            cluster_id = result[i].cluster_id
+            indicator_id = result[i].indicator_id
+            indicator_dict["indicator"]=indicator_id_to_name(indicator_id)
+
+        if cluster_id != result[i].cluster_id:
+            cluster_name=cluster_id_to_name(cluster_id)
+            indicator_dict[cluster_name] = point_list
+            cluster_id = result[i].cluster_id
+            point_list = []
+
+        if indicator_id != result[i].indicator_id:
+            result_list.append(indicator_dict)
+            indicator_id = result[i].indicator_id
+            indicator_dict = {}
+            indicator_dict["indicator"]=indicator_id_to_name(indicator_id)
+
+        # 点的字典
+        point_dict["time"] = result[i].time
+        point_dict["value"] = result[i].value
+        point_list.append(point_dict)
+        point_dict = {}
+
+        if i == len(result) - 1:
+            indicator_dict[cluster_id_to_name(cluster_id)] = point_list
+            result_list.append(indicator_dict)
+
+    return result_list
 
 @ds.route("/getClusterData", strict_slashes=False, methods=["POST", "GET"])
 def get_cluster_data():
