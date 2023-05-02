@@ -172,34 +172,34 @@ def cluster_data_process(result):
     point_list = []
     for i in range(len(result)):
         if i == 0:
-            cluster_id = result[i].cluster_id
-            indicator_id = result[i].indicator_id
+            cluster_id = result[i]['cluster_id']
+            indicator_id = result[i]['indicator_id']
             indicator_dict["indicator"] = indicator_id_to_name(indicator_id)
             # cluster_name = cluster_id_to_name(cluster_id)
             # indicator_dict[cluster_name] = point_list
 
 
         # #只变indicator
-        if indicator_id != result[i].indicator_id and cluster_id==result[i].cluster_id:
+        if indicator_id != result[i]['indicator_id'] and cluster_id==result[i]['cluster_id']:
             #1.把集群：【point_list】加到indicator_dict
             indicator_dict[cluster_id_to_name(cluster_id)]=point_list
             # 2.把indicator_dict append到result_list
             result_list.append(indicator_dict)
             # 3.更新列表、字典，cluster id，indicator id
             point_list=[]
-            indicator_id = result[i].indicator_id
+            indicator_id = result[i]['indicator_id']
             indicator_dict = {}
-            cluster_id=result[i].cluster_id
+            cluster_id=result[i]['cluster_id']
             indicator_dict["indicator"] = indicator_id_to_name(indicator_id)
 
         #只变cluster
-        if cluster_id != result[i].cluster_id and indicator_id==result[i].indicator_id:
+        if cluster_id != result[i]['cluster_id'] and indicator_id==result[i]['indicator_id']:
             indicator_dict[cluster_id_to_name(cluster_id)] = point_list
             # indicator_dict["cc-cc408-hya"] = point_list
-            cluster_id = result[i].cluster_id
+            cluster_id = result[i]['cluster_id']
             point_list = []
         #都变
-        if cluster_id != result[i].cluster_id and indicator_id!=result[i].indicator_id:
+        if cluster_id != result[i]['cluster_id'] and indicator_id!=result[i]['indicator_id']:
             #1.把集群：【point_list】加到indicator_dict
             indicator_dict[cluster_id_to_name(cluster_id)]=point_list
             #2.把indicator_dict append到result_list
@@ -207,16 +207,16 @@ def cluster_data_process(result):
             #3.更新列表、字典，cluster id，indicator id
             point_list=[]
             indicator_dict={}
-            cluster_id=result[i].cluster_id
-            indicator_id=result[i].indicator_id
+            cluster_id=result[i]['cluster_id']
+            indicator_id=result[i]['indicator_id']
             #4.把新的indicator_dict里面增加第一行
             # indicator：xxx
             indicator_dict["indicator"]=indicator_id_to_name(indicator_id)
 
 
         # 点的字典
-        point_dict["time"] = result[i].time
-        point_dict["value"] = result[i].value
+        point_dict["time"] = result[i]['time']
+        point_dict["value"] = result[i]['value']
         point_list.append(point_dict)
         point_dict = {}
 
@@ -234,7 +234,7 @@ def get_cluster_data():
         start_time = "2023/04/01 00:00"
         start_time = dp.datetime_to_timestamp(start_time)
         end_time = dp.datetime_to_timestamp(end_time)
-        request_number = 10
+        request_number = 100
         cluster_ids = [1]
 
         indicator_ids = [1, 2, 3]
@@ -264,7 +264,7 @@ def get_cluster_data():
         end_time = dp.datetime_to_timestamp(end_time)
         start_time = dp.datetime_to_timestamp(start_time)
         info = request.form["data"]
-        request_number = 2
+        request_number = 150
         list_data = json.loads(info)
         tree_data = list_to_tree(list_data)
         result = []
@@ -290,6 +290,7 @@ def get_cluster_data():
         for item in result:
             result_list.append(item.to_json())
         print(result_list)
+        result_list = cluster_data_process(result_list)
 
     return jsonify(result_list=result_list)
 
