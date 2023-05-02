@@ -1,6 +1,6 @@
 <template>
   <div>
-    <line-chart v-for="(item, index) in items" :moduleName="item.message" :key="index"></line-chart>
+    <line-chart v-for="(item, index) in initialData" :moduleName="item.indicator" :key="index" :propsData="item"></line-chart>
   </div>
 </template>
 
@@ -9,13 +9,9 @@ import LineChart from "../component/LineChart.vue";
 
 export default {
   components: { LineChart },
+  props: ["initialData"],
   data() {
     return {
-      items: [
-        { message: '活跃分片总数' },
-        { message: '集群健康状态' },
-        { message: '集群健康节点' }
-      ]
     }
   },
   methods: {

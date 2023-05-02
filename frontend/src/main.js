@@ -8,12 +8,14 @@ import ElementUI from 'element-ui'
 import axios from 'axios'
 import 'element-ui/lib/theme-chalk/index.css'
 import * as echarts from 'echarts'
+import moment from 'moment'; 
 
 Vue.use(ElementUI)
 
 Vue.config.productionTip = false
 Vue.prototype.$echarts = echarts
 Vue.prototype.$http = axios
+Vue.prototype.$moment = moment;
 // 文件服务器
 Vue.prototype.HOST = 'http://47.106.217.8:9001/'
 /* eslint-disable no-new */
