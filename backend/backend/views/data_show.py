@@ -45,7 +45,7 @@ def get_indicator_name():
     else:
         data = NodeMultipleData.query.with_entities(NodeMultipleData.indicator_id).all()
     data = list(set(data))
-    data = list(map(lambda x: x[0], data))
+    data = sorted(list(map(lambda x: x[0], data)))
     indicators = []
     for item in data:
         temp = Indicator.query.filter(Indicator.indicator_id == item).all()
