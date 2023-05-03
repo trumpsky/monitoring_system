@@ -9,7 +9,7 @@
       <el-submenu index="1">
         <template slot="title">
           <i class="el-icon-info"></i>
-          <span>监控系统</span>
+          <span>系统简介</span>
         </template>
         <el-menu-item-group>
           <el-menu-item index="/menu/1-1">系统信息</el-menu-item>
@@ -20,12 +20,23 @@
       <el-submenu index="2">
         <template slot="title">
           <i class="el-icon-setting"></i>
-          <span>数据模式</span>
+          <span>数据监控</span>
         </template>
         <el-menu-item-group>
-          <el-menu-item index="/menu/2-1" @click="toCluster">集群数据</el-menu-item>
-          <el-menu-item index="/menu/2-2" @click="toNodeSingle">节点单指标</el-menu-item>
-          <el-menu-item index="/menu/2-3" @click="toNodeMultiple">节点多指标</el-menu-item>
+          <el-menu-item index="/menu/2-1" @click="toCluster">集群模式</el-menu-item>
+          <el-menu-item index="/menu/2-2" @click="toNodeSingle">节点单模式</el-menu-item>
+          <el-menu-item index="/menu/2-3" @click="toNodeMultiple">节点多模式</el-menu-item>
+        </el-menu-item-group>
+      </el-submenu>
+      <el-submenu index="4">
+        <template slot="title">
+          <i class="el-icon-setting"></i>
+          <span>异常匹配</span>
+        </template>
+        <el-menu-item-group>
+          <el-menu-item index="/menu/4-1">算法一</el-menu-item>
+          <el-menu-item index="/menu/4-2">算法二</el-menu-item>
+          <el-menu-item index="/menu/4-3">算法对比</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
       <el-submenu index="3">
