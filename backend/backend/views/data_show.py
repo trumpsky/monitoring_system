@@ -99,17 +99,7 @@ def cluster_data_process(result):
             cluster_id = result[i].cluster_id
             indicator_id = result[i].indicator_id
             # 4.把新的indicator_dict里面增加第一行
-
             # indicator：xxx
-            indicator_dict["indicator"] = Tool.indicator_id_to_name(indicator_id)            # 1.把集群：【point_list】加到indicator_dict
-            indicator_dict[Tool.cluster_id_to_name(cluster_id)] = point_list
-            # 2.把indicator_dict append到result_list
-            result_list.append(indicator_dict)
-            # 3.更新列表、字典，cluster id，indicator id
-            point_list = []
-            indicator_id = result[i].indicator_id
-            indicator_dict = {}
-            cluster_id = result[i].cluster_id
             indicator_dict["indicator"] = Tool.indicator_id_to_name(indicator_id)
 
         # 只变cluster
@@ -118,8 +108,6 @@ def cluster_data_process(result):
             # indicator_dict["cc-cc408-hya"] = point_list
             cluster_id = result[i].cluster_id
             point_list = []
-
-
 
         # 点的字典
         point_dict["time"] = result[i].time
@@ -175,6 +163,7 @@ def get_cluster_data():
                                                     ClusterData.cluster_id == cluster_id,
                                                     ClusterData.indicator_id.in_(indicator_ids)).order_by(
                 ClusterData.indicator_id,
+                ClusterData.cluster_id,
                 ClusterData.time).all())
             result_number = ClusterData.query.filter(ClusterData.time > start_time,
                                                      ClusterData.time < end_time,
@@ -182,6 +171,8 @@ def get_cluster_data():
                                                      ClusterData.indicator_id.in_(indicator_ids)).count()
             result_item = dp.limit_data(result_item, result_number, limit_number=request_number * len(indicator_ids))
             result.extend(result_item)
+
+    result.sort(key=lambda x: (x.indicator_id, x.cluster_id))
     result_list = cluster_data_process(result)
 
     return jsonify(result_list=result_list)
@@ -213,9 +204,6 @@ def single_result_process(result):
             indicator_id = result[i].indicator_id
             # 4.把新的indicator_dict里面增加第一行
             # indicator：xxx
-            indicator_dict["indicator"] = Tool.indicator_id_to_name(indicator_id)
-            node_id = result[i].node_id
-            indicator_id = result[i].indicator_id
             indicator_dict["indicator"] = Tool.indicator_id_to_name(indicator_id)
 
         # 只变cluster
@@ -250,13 +238,14 @@ def get_node_single_data():
 
         result = NodeSingleData.query.filter(NodeSingleData.time > start_time,
                                              NodeSingleData.time < end_time,
-                                             NodeSingleData.node_id).order_by(NodeSingleData.indicator_id.in_(indicator_ids),
-                                                                              NodeSingleData.node_id.in_(node_ids),
-                                                                              NodeSingleData.time).all()
+                                             NodeSingleData.node_id).order_by(
+            NodeSingleData.indicator_id.in_(indicator_ids),
+            NodeSingleData.node_id.in_(node_ids),
+            NodeSingleData.time).all()
         result_number = NodeSingleData.query.filter(NodeSingleData.time > start_time,
                                                     NodeSingleData.time < end_time,
                                                     NodeSingleData.indicator_id.in_(indicator_ids),
-                                                    NodeSingleData.node_id.in_(node_ids),).count()
+                                                    NodeSingleData.node_id.in_(node_ids), ).count()
         result = dp.limit_data(result, result_number, limit_number=request_number)
 
     if request.method == "POST":
@@ -322,7 +311,6 @@ def multiple_result_process(result):
         # 只变cluster
         if disk_id != result[i].disk_id and indicator_id == result[i].indicator_id:
             indicator_dict[Tool.disk_id_to_nodename_ip_diskname(disk_id)] = point_list
-            # indicator_dict["cc-cc408-hya"] = point_list
             disk_id = result[i].disk_id
             point_list = []
 
