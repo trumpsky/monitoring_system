@@ -34,9 +34,9 @@
           <span>异常匹配</span>
         </template>
         <el-menu-item-group>
-          <el-menu-item index="/menu/4-1">算法一</el-menu-item>
-          <el-menu-item index="/menu/4-2">算法二</el-menu-item>
-          <el-menu-item index="/menu/4-3">算法对比</el-menu-item>
+          <el-menu-item index="/menu/4-1" @click="toDTW">DTW算法</el-menu-item>
+          <el-menu-item index="/menu/4-2" @click="toFrechet">Frechet算法</el-menu-item>
+          <el-menu-item index="/menu/4-3" @click="toHausdorff">Hausdorff算法</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
       <el-submenu index="3">
@@ -67,16 +67,22 @@ export default {
     },
     toCluster(){
       this.$store.commit("updateObservedState", "cluster")
-      console.log(this.$store.getters.getObservedState)
     },
     toNodeSingle(){
       this.$store.commit("updateObservedState", "nodeSingle")
-      console.log(this.$store.getters.getObservedState)
     },
     toNodeMultiple(){
       this.$store.commit("updateObservedState", "nodeMultiple")
-      console.log(this.$store.getters.getObservedState)
     },
+    toDTW(){
+      this.$store.commit("updateAlgorithm", "DTW")
+    },
+    toFrechet(){
+      this.$store.commit("updateAlgorithm", "Frechet")
+    },
+    toHausdorff(){
+      this.$store.commit("updateAlgorithm", "Hausdorff")
+    }
   },
 }
 </script>
