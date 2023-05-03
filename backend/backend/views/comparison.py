@@ -46,8 +46,8 @@ class DTW:
 
     def show_rank(self):
         self.distances.sort(key=lambda x: x[1])
-        for i, (file_id, dist) in enumerate(self.distances):
-            print(f'rank_{i + 1} file_{file_id} distance:{dist}')
+        # for i, (file_id, dist) in enumerate(self.distances):
+        #     print(f'rank_{i + 1} file_{file_id} distance:{dist}')
 
     def run(self):
         self.load_data()
@@ -69,10 +69,9 @@ class Frechet:
             self.similarity.append(tuple([index, shape_similarity(self.data[index], self.data[0], rotations=30, checkRotation=False)]))
 
     def show_rank(self):
-        print("Frechet")
         self.similarity.sort(key=lambda x: x[1], reverse=True)
-        for i, (file_id, similarity) in enumerate(self.similarity):
-            print(f'rank_{i + 1} file_{file_id} similarity:{similarity}')
+        # for i, (file_id, similarity) in enumerate(self.similarity):
+        #     print(f'rank_{i + 1} file_{file_id} similarity:{similarity}')
 
     def run(self):
         self.load_data()
@@ -96,10 +95,9 @@ class Hausdorff:
             self.distances.append(tuple([index, distance]))
 
     def show_rank(self):
-        print("Frechet")
         self.distances.sort(key=lambda x: x[1])
-        for i, (file_id, distance) in enumerate(self.distances):
-            print(f'rank_{i + 1} file_{file_id} similarity:{distance}')
+        # for i, (file_id, distance) in enumerate(self.distances):
+        #     print(f'rank_{i + 1} file_{file_id} similarity:{distance}')
 
     def run(self):
         self.load_data()
@@ -108,16 +106,31 @@ class Hausdorff:
 
 @cp.route("/getRank", strict_slashes=False, methods=["POST", "GET"])
 def get_rank():
-    pass
-
-
-if __name__ == '__main__':
-    # dtw = DTW()
-    # dtw.run()
-
-    # frechet = Frechet()
-    # frechet.run()
-
-    # hausdorff = Hausdorff()
-    # hausdorff.run()
-    pass
+    if request.method == "GET":
+        algorithm = "dtw"
+        if algorithm == "dtw":
+            dtw = DTW()
+            dtw.run()
+            return jsonify(dtw.distances)
+        elif algorithm == "frechet":
+            frechet = Frechet()
+            frechet.run()
+            return jsonify(frechet.similarity)
+        elif algorithm == "hausdorff":
+            hausdorff = Hausdorff()
+            hausdorff.run()
+            return jsonify(hausdorff.distances)
+    if request.method == "POST":
+        algorithm = request.form["algorithm"]
+        if algorithm == "dtw":
+            dtw = DTW()
+            dtw.run()
+            return jsonify(dtw.distances)
+        elif algorithm == "frechet":
+            frechet = Frechet()
+            frechet.run()
+            return jsonify(frechet.similarity)
+        elif algorithm == "hausdorff":
+            hausdorff = Hausdorff()
+            hausdorff.run()
+            return jsonify(hausdorff.distances)
