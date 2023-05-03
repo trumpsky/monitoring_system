@@ -59,9 +59,6 @@ export default {
     };
   },
   methods: {
-    testClick() {
-      this.$refs.dataShow.testClick()
-    },
     change(val) {
       this.showComponent = val == '2';
     },
