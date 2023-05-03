@@ -23,17 +23,11 @@ class Tool:
 
     @staticmethod
     def get_cluster_id(name):
-        if name == "cc-cc408-hya":
-            return 1
-        else:
-            return 2
+        return Cluster.query.filter(Cluster.cluster_name == name).first().cluster_id
 
     @staticmethod
     def cluster_id_to_name(cluster_id):
-        if cluster_id == 1:
-            return "cc-cc408-hya"
-        else:
-            return "cc-cc553-interestPrice"
+        return Cluster.query.filter(Cluster.cluster_id == cluster_id).first().cluster_name
 
     @staticmethod
     def get_node_id(node_ip, node_name, cluster_id):
@@ -60,6 +54,151 @@ class Tool:
                                    Disk.disk_name == disk_name).first()
         return result.disk_id
 
+class DataProcess:
+    @staticmethod
+    def cluster_data_process(result):
+        result_list = []
+        cluster_id = -1
+        indicator_id = -1
+        indicator_dict = {}
+        point_dict = {}
+        point_list = []
+        for i in range(len(result)):
+            if i == 0:
+                cluster_id = result[i].cluster_id
+                indicator_id = result[i].indicator_id
+                indicator_dict["indicator"] = Tool.indicator_id_to_name(indicator_id)
+                # cluster_name = cluster_id_to_name(cluster_id)
+                # indicator_dict[cluster_name] = point_list
+
+            # #只变indicator
+            if indicator_id != result[i].indicator_id:
+                # 1.把集群：【point_list】加到indicator_dict
+                indicator_dict[Tool.cluster_id_to_name(cluster_id)] = point_list
+                # 2.把indicator_dict append到result_list
+                result_list.append(indicator_dict)
+                # 3.更新列表、字典，cluster id，indicator id
+                point_list = []
+                indicator_dict = {}
+                cluster_id = result[i].cluster_id
+                indicator_id = result[i].indicator_id
+                # 4.把新的indicator_dict里面增加第一行
+                # indicator：xxx
+                indicator_dict["indicator"] = Tool.indicator_id_to_name(indicator_id)
+
+            # 只变cluster
+            if cluster_id != result[i].cluster_id and indicator_id == result[i].indicator_id:
+                indicator_dict[Tool.cluster_id_to_name(cluster_id)] = point_list
+                # indicator_dict["cc-cc408-hya"] = point_list
+                cluster_id = result[i].cluster_id
+                point_list = []
+
+            # 点的字典
+            point_dict["time"] = result[i].time
+            point_dict["value"] = result[i].value
+            point_list.append(point_dict)
+            point_dict = {}
+
+            if i == len(result) - 1:
+                indicator_dict[Tool.cluster_id_to_name(cluster_id)] = point_list
+                result_list.append(indicator_dict)
+
+        return result_list
+
+    @staticmethod
+    def single_result_process(result):
+        result_list = []
+        node_id = -1
+        indicator_id = -1
+        indicator_dict = {}
+        point_dict = {}
+        point_list = []
+        for i in range(len(result)):
+            if i == 0:
+                node_id = result[i].node_id
+                indicator_id = result[i].indicator_id
+                indicator_dict["indicator"] = Tool.indicator_id_to_name(indicator_id)
+
+            # 变indicator
+            if node_id != result[i].node_id and indicator_id != result[i].indicator_id:
+                # 1.把集群：【point_list】加到indicator_dict
+                indicator_dict[Tool.node_id_to_name_ip(node_id)] = point_list
+                # 2.把indicator_dict append到result_list
+                result_list.append(indicator_dict)
+                # 3.更新列表、字典，cluster id，indicator id
+                point_list = []
+                indicator_dict = {}
+                node_id = result[i].node_id
+                indicator_id = result[i].indicator_id
+                # 4.把新的indicator_dict里面增加第一行
+                # indicator：xxx
+                indicator_dict["indicator"] = Tool.indicator_id_to_name(indicator_id)
+
+            # 只变cluster
+            if node_id != result[i].node_id and indicator_id == result[i].indicator_id:
+                indicator_dict[Tool.node_id_to_name_ip(node_id)] = point_list
+                node_id = result[i].node_id
+                point_list = []
+
+            # 点的字典
+            point_dict["time"] = result[i].time
+            point_dict["value"] = result[i].value
+            point_list.append(point_dict)
+            point_dict = {}
+
+            if i == len(result) - 1:
+                indicator_dict[Tool.node_id_to_name_ip(node_id)] = point_list
+                result_list.append(indicator_dict)
+
+        return result_list
+
+    @staticmethod
+    def multiple_result_process(result):
+        result_list = []
+        disk_id = -1
+        indicator_id = -1
+        indicator_dict = {}
+        point_dict = {}
+        point_list = []
+        for i in range(len(result)):
+            if i == 0:
+                disk_id = result[i].disk_id
+                indicator_id = result[i].indicator_id
+                indicator_dict["indicator"] = Tool.indicator_id_to_name(indicator_id)
+
+            # 变indicator
+            if disk_id != result[i].disk_id and indicator_id != result[i].indicator_id:
+                # 1.把集群：【point_list】加到indicator_dict
+                indicator_dict[Tool.disk_id_to_nodename_ip_diskname(disk_id)] = point_list
+                # 2.把indicator_dict append到result_list
+                result_list.append(indicator_dict)
+                # 3.更新列表、字典，cluster id，indicator id
+                point_list = []
+                indicator_dict = {}
+                disk_id = result[i].disk_id
+                indicator_id = result[i].indicator_id
+                # 4.把新的indicator_dict里面增加第一行
+                # indicator：xxx
+                indicator_dict["indicator"] = Tool.indicator_id_to_name(indicator_id)
+
+            # 只变cluster
+            if disk_id != result[i].disk_id and indicator_id == result[i].indicator_id:
+                indicator_dict[Tool.disk_id_to_nodename_ip_diskname(disk_id)] = point_list
+                disk_id = result[i].disk_id
+                point_list = []
+
+            # 点的字典
+            point_dict["time"] = result[i].time
+            point_dict["value"] = result[i].value
+            point_list.append(point_dict)
+            point_dict = {}
+
+            if i == len(result) - 1:
+                indicator_dict[Tool.disk_id_to_nodename_ip_diskname(disk_id)] = point_list
+                result_list.append(indicator_dict)
+
+        return result_list
+
 
 def load_request():
     start_time = request.form["start_time"]
@@ -72,54 +211,7 @@ def load_request():
     return start_time, end_time, tree_data
 
 
-def cluster_data_process(result):
-    result_list = []
-    cluster_id = -1
-    indicator_id = -1
-    indicator_dict = {}
-    point_dict = {}
-    point_list = []
-    for i in range(len(result)):
-        if i == 0:
-            cluster_id = result[i].cluster_id
-            indicator_id = result[i].indicator_id
-            indicator_dict["indicator"] = Tool.indicator_id_to_name(indicator_id)
-            # cluster_name = cluster_id_to_name(cluster_id)
-            # indicator_dict[cluster_name] = point_list
 
-        # #只变indicator
-        if indicator_id != result[i].indicator_id:
-            # 1.把集群：【point_list】加到indicator_dict
-            indicator_dict[Tool.cluster_id_to_name(cluster_id)] = point_list
-            # 2.把indicator_dict append到result_list
-            result_list.append(indicator_dict)
-            # 3.更新列表、字典，cluster id，indicator id
-            point_list = []
-            indicator_dict = {}
-            cluster_id = result[i].cluster_id
-            indicator_id = result[i].indicator_id
-            # 4.把新的indicator_dict里面增加第一行
-            # indicator：xxx
-            indicator_dict["indicator"] = Tool.indicator_id_to_name(indicator_id)
-
-        # 只变cluster
-        if cluster_id != result[i].cluster_id and indicator_id == result[i].indicator_id:
-            indicator_dict[Tool.cluster_id_to_name(cluster_id)] = point_list
-            # indicator_dict["cc-cc408-hya"] = point_list
-            cluster_id = result[i].cluster_id
-            point_list = []
-
-        # 点的字典
-        point_dict["time"] = result[i].time
-        point_dict["value"] = result[i].value
-        point_list.append(point_dict)
-        point_dict = {}
-
-        if i == len(result) - 1:
-            indicator_dict[Tool.cluster_id_to_name(cluster_id)] = point_list
-            result_list.append(indicator_dict)
-
-    return result_list
 
 
 @ds.route("/getClusterData", strict_slashes=False, methods=["POST", "GET"])
@@ -173,56 +265,11 @@ def get_cluster_data():
             result.extend(result_item)
 
     result.sort(key=lambda x: (x.indicator_id, x.cluster_id))
-    result_list = cluster_data_process(result)
+    result_list = DataProcess.cluster_data_process(result)
 
     return jsonify(result_list=result_list)
 
 
-def single_result_process(result):
-    result_list = []
-    node_id = -1
-    indicator_id = -1
-    indicator_dict = {}
-    point_dict = {}
-    point_list = []
-    for i in range(len(result)):
-        if i == 0:
-            node_id = result[i].node_id
-            indicator_id = result[i].indicator_id
-            indicator_dict["indicator"] = Tool.indicator_id_to_name(indicator_id)
-
-        # 变indicator
-        if node_id != result[i].node_id and indicator_id != result[i].indicator_id:
-            # 1.把集群：【point_list】加到indicator_dict
-            indicator_dict[Tool.node_id_to_name_ip(node_id)] = point_list
-            # 2.把indicator_dict append到result_list
-            result_list.append(indicator_dict)
-            # 3.更新列表、字典，cluster id，indicator id
-            point_list = []
-            indicator_dict = {}
-            node_id = result[i].node_id
-            indicator_id = result[i].indicator_id
-            # 4.把新的indicator_dict里面增加第一行
-            # indicator：xxx
-            indicator_dict["indicator"] = Tool.indicator_id_to_name(indicator_id)
-
-        # 只变cluster
-        if node_id != result[i].node_id and indicator_id == result[i].indicator_id:
-            indicator_dict[Tool.node_id_to_name_ip(node_id)] = point_list
-            node_id = result[i].node_id
-            point_list = []
-
-        # 点的字典
-        point_dict["time"] = result[i].time
-        point_dict["value"] = result[i].value
-        point_list.append(point_dict)
-        point_dict = {}
-
-        if i == len(result) - 1:
-            indicator_dict[Tool.node_id_to_name_ip(node_id)] = point_list
-            result_list.append(indicator_dict)
-
-    return result_list
 
 
 @ds.route("/getNodeSingleData", strict_slashes=False, methods=["POST", "GET"])
@@ -276,55 +323,9 @@ def get_node_single_data():
                                                 limit_number=request_number * len(node_ids))
                     result.extend(result_item)
 
-    result_list = single_result_process(result)
+    result_list = DataProcess.single_result_process(result)
     return jsonify(result_list=result_list)
 
-
-def multiple_result_process(result):
-    result_list = []
-    disk_id = -1
-    indicator_id = -1
-    indicator_dict = {}
-    point_dict = {}
-    point_list = []
-    for i in range(len(result)):
-        if i == 0:
-            disk_id = result[i].disk_id
-            indicator_id = result[i].indicator_id
-            indicator_dict["indicator"] = Tool.indicator_id_to_name(indicator_id)
-
-        # 变indicator
-        if disk_id != result[i].disk_id and indicator_id != result[i].indicator_id:
-            # 1.把集群：【point_list】加到indicator_dict
-            indicator_dict[Tool.disk_id_to_nodename_ip_diskname(disk_id)] = point_list
-            # 2.把indicator_dict append到result_list
-            result_list.append(indicator_dict)
-            # 3.更新列表、字典，cluster id，indicator id
-            point_list = []
-            indicator_dict = {}
-            disk_id = result[i].disk_id
-            indicator_id = result[i].indicator_id
-            # 4.把新的indicator_dict里面增加第一行
-            # indicator：xxx
-            indicator_dict["indicator"] = Tool.indicator_id_to_name(indicator_id)
-
-        # 只变cluster
-        if disk_id != result[i].disk_id and indicator_id == result[i].indicator_id:
-            indicator_dict[Tool.disk_id_to_nodename_ip_diskname(disk_id)] = point_list
-            disk_id = result[i].disk_id
-            point_list = []
-
-        # 点的字典
-        point_dict["time"] = result[i].time
-        point_dict["value"] = result[i].value
-        point_list.append(point_dict)
-        point_dict = {}
-
-        if i == len(result) - 1:
-            indicator_dict[Tool.disk_id_to_nodename_ip_diskname(disk_id)] = point_list
-            result_list.append(indicator_dict)
-
-    return result_list
 
 
 @ds.route("/getNodeMultipleData", strict_slashes=False, methods=["POST", "GET"])
@@ -379,6 +380,6 @@ def get_node_multiple_data():
                                                     limit_number=request_number * len(disk_ids))
                         result.extend(result_item)
 
-    result_list = multiple_result_process(result)
+    result_list = DataProcess.multiple_result_process(result)
 
     return jsonify(result_list=result_list)
