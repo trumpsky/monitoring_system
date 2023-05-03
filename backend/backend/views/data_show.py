@@ -217,8 +217,8 @@ def load_request():
 @ds.route("/getClusterData", strict_slashes=False, methods=["POST", "GET"])
 def get_cluster_data():
     if request.method == "GET":
-        end_time = "2023/04/12 17:33"
-        start_time = "2023/04/01 00:00"
+        end_time = "2023/04/12 17:34"
+        start_time = "2023/04/12 17:34"
         start_time = dp.datetime_to_timestamp(start_time)
         end_time = dp.datetime_to_timestamp(end_time)
         request_number = 100
@@ -226,15 +226,15 @@ def get_cluster_data():
 
         indicator_ids = [1, 2, 3]
 
-        result = ClusterData.query.filter(ClusterData.time > start_time,
-                                          ClusterData.time < end_time,
+        result = ClusterData.query.filter(ClusterData.time >= start_time,
+                                          ClusterData.time <= end_time,
                                           ClusterData.cluster_id.in_(cluster_ids),
                                           ClusterData.indicator_id.in_(indicator_ids)).order_by(
             ClusterData.indicator_id,
             ClusterData.cluster_id,
             ClusterData.time).all()
-        result_number = ClusterData.query.filter(ClusterData.time > start_time,
-                                                 ClusterData.time < end_time,
+        result_number = ClusterData.query.filter(ClusterData.time >= start_time,
+                                                 ClusterData.time <= end_time,
                                                  ClusterData.cluster_id.in_(cluster_ids),
                                                  ClusterData.indicator_id.in_(indicator_ids)).count()
 
@@ -250,15 +250,15 @@ def get_cluster_data():
             indicator_ids = []
             for indicator_name in indicator_dict.keys():
                 indicator_ids.append(Tool.get_indicator_id(indicator_name))
-            result_item = (ClusterData.query.filter(ClusterData.time > start_time,
-                                                    ClusterData.time < end_time,
+            result_item = (ClusterData.query.filter(ClusterData.time >= start_time,
+                                                    ClusterData.time <= end_time,
                                                     ClusterData.cluster_id == cluster_id,
                                                     ClusterData.indicator_id.in_(indicator_ids)).order_by(
                 ClusterData.indicator_id,
                 ClusterData.cluster_id,
                 ClusterData.time).all())
-            result_number = ClusterData.query.filter(ClusterData.time > start_time,
-                                                     ClusterData.time < end_time,
+            result_number = ClusterData.query.filter(ClusterData.time >= start_time,
+                                                     ClusterData.time <= end_time,
                                                      ClusterData.cluster_id == cluster_id,
                                                      ClusterData.indicator_id.in_(indicator_ids)).count()
             result_item = dp.limit_data(result_item, result_number, limit_number=request_number * len(indicator_ids))
@@ -283,14 +283,14 @@ def get_node_single_data():
         indicator_ids = [5, 6]
         request_number = 20
 
-        result = NodeSingleData.query.filter(NodeSingleData.time > start_time,
-                                             NodeSingleData.time < end_time,
+        result = NodeSingleData.query.filter(NodeSingleData.time >= start_time,
+                                             NodeSingleData.time <= end_time,
                                              NodeSingleData.node_id).order_by(
             NodeSingleData.indicator_id.in_(indicator_ids),
             NodeSingleData.node_id.in_(node_ids),
             NodeSingleData.time).all()
-        result_number = NodeSingleData.query.filter(NodeSingleData.time > start_time,
-                                                    NodeSingleData.time < end_time,
+        result_number = NodeSingleData.query.filter(NodeSingleData.time >= start_time,
+                                                    NodeSingleData.time <= end_time,
                                                     NodeSingleData.indicator_id.in_(indicator_ids),
                                                     NodeSingleData.node_id.in_(node_ids), ).count()
         result = dp.limit_data(result, result_number, limit_number=request_number)
@@ -308,15 +308,15 @@ def get_node_single_data():
                     node_ids = []
                     for node_name in node_dict.keys():
                         node_ids.append(Tool.get_node_id(ip, node_name, cluster_id))
-                    result_item = NodeSingleData.query.filter(NodeSingleData.time > start_time,
-                                                              NodeSingleData.time < end_time,
+                    result_item = NodeSingleData.query.filter(NodeSingleData.time >= start_time,
+                                                              NodeSingleData.time <= end_time,
                                                               NodeSingleData.indicator_id == indicator_id,
                                                               NodeSingleData.node_id.in_(node_ids)).order_by(
                         NodeSingleData.indicator_id,
                         NodeSingleData.node_id,
                         NodeSingleData.time).all()
-                    result_number = NodeSingleData.query.filter(NodeSingleData.time > start_time,
-                                                                NodeSingleData.time < end_time,
+                    result_number = NodeSingleData.query.filter(NodeSingleData.time >= start_time,
+                                                                NodeSingleData.time <= end_time,
                                                                 NodeSingleData.indicator_id == indicator_id,
                                                                 NodeSingleData.node_id.in_(node_ids)).count()
                     result_item = dp.limit_data(result_item, result_number,
@@ -339,14 +339,14 @@ def get_node_multiple_data():
         indicator_ids = [10]
         request_number = 15
 
-        result = NodeMultipleData.query.filter(NodeMultipleData.time > start_time,
-                                               NodeMultipleData.time < end_time,
+        result = NodeMultipleData.query.filter(NodeMultipleData.time >= start_time,
+                                               NodeMultipleData.time <= end_time,
                                                NodeMultipleData.indicator_id.in_(indicator_ids),
                                                NodeMultipleData.disk_id.in_(disk_ids)).order_by(
             NodeMultipleData.disk_id,
             NodeMultipleData.time).all()
-        result_number = NodeMultipleData.query.filter(NodeMultipleData.time > start_time,
-                                                      NodeMultipleData.time < end_time,
+        result_number = NodeMultipleData.query.filter(NodeMultipleData.time >= start_time,
+                                                      NodeMultipleData.time <= end_time,
                                                       NodeMultipleData.indicator_id.in_(indicator_ids),
                                                       NodeMultipleData.disk_id.in_(disk_ids)).count()
         result = dp.limit_data(result, result_number, limit_number=request_number)
@@ -365,15 +365,15 @@ def get_node_multiple_data():
                         disk_ids = []
                         for disk_name in disk_dict.keys():
                             disk_ids.append(Tool.get_disk_id(cluster_id, ip, node_name, disk_name))
-                        result_item = NodeMultipleData.query.filter(NodeMultipleData.time > start_time,
-                                                                    NodeMultipleData.time < end_time,
+                        result_item = NodeMultipleData.query.filter(NodeMultipleData.time >= start_time,
+                                                                    NodeMultipleData.time <= end_time,
                                                                     NodeMultipleData.indicator_id == indicator_id,
                                                                     NodeMultipleData.disk_id.in_(disk_ids)).order_by(
                             NodeMultipleData.indicator_id,
                             NodeMultipleData.disk_id,
                             NodeMultipleData.time).all()
-                        result_number = NodeMultipleData.query.filter(NodeMultipleData.time > start_time,
-                                                                      NodeMultipleData.time < end_time,
+                        result_number = NodeMultipleData.query.filter(NodeMultipleData.time >= start_time,
+                                                                      NodeMultipleData.time <= end_time,
                                                                       NodeMultipleData.indicator_id == indicator_id,
                                                                       NodeMultipleData.disk_id.in_(disk_ids)).count()
                         result_item = dp.limit_data(result_item, result_number,
