@@ -1,6 +1,6 @@
 <template>
   <div>
-    <line-chart v-for="(item, index) in initialData" :moduleName="item.indicator" :key="index" :propsData="item" @datazoom="pushTime"></line-chart>
+    <line-chart v-for="(item, index) in initialData" :moduleName="item.indicator" :key="index" :propsData="item" @datazoom="pushTime" @refresh="refreshData" @stop="stopData" ref="chart"></line-chart>
   </div>
 </template>
 
@@ -17,8 +17,8 @@ export default {
   methods: {
     connectChart() {
       let chartArray = []
-      for (let i = 0; i < this.$children.length; i++) {
-        const chart = this.$echarts.init(this.$children[i].$refs.chart)
+      for (const element of this.$children) {
+        const chart = this.$echarts.init(element.$refs.chart)
         chartArray.push(chart)
       }
       this.$echarts.connect(chartArray)
@@ -26,8 +26,19 @@ export default {
     pushTime(data){
       this.$emit("datazoom",data)
     },
-    refreshTime(data){
-      console.log(data)
+    refreshData(data){
+      this.$emit("refresh",data)
+    },
+    stopData(){
+      this.$emit("stop")
+    },
+    clickFunction(){
+      if(this.$store.getters.getIsUpdate){
+        this.$refs.chart[0].stopFunction();
+      }
+      else{
+        this.$refs.chart[0].clickFunction();
+      }
     }
   },
   mounted() {

@@ -33,7 +33,7 @@ export default {
     getFirstLevel() {
       const params = new URLSearchParams();
       this.$http
-        .post("http://localhost:5000/dataShow/clusterName", params)
+        .post("http://localhost:5000/dataGet/clusterName", params)
         .then((res) => {
           this.projectAllList = res.data.cluster;
         });
@@ -44,7 +44,7 @@ export default {
       switch (data.level) {
         case 1:
           this.$http
-            .post("http://localhost:5000/dataShow/getIndicatorName", params)
+            .post("http://localhost:5000/dataGet/getIndicatorName", params)
             .then((res) => {
               const nodes = res.data.indicators.map((item) => ({
                 label: item.label,
@@ -62,7 +62,7 @@ export default {
           }
           params.append("cluster_name", data.pathLabels[0]);
           this.$http
-            .post("http://localhost:5000/dataShow/getNodeIP", params)
+            .post("http://localhost:5000/dataGet/getNodeIP", params)
             .then((res) => {
               const nodes = res.data.node_ip.map((item) => ({
                 label: item.label,
@@ -75,7 +75,7 @@ export default {
           params.append("cluster_name", data.pathLabels[0]);
           params.append("node_ip", data.pathLabels[2]);
           this.$http
-            .post("http://localhost:5000/dataShow/getNodeName", params)
+            .post("http://localhost:5000/dataGet/getNodeName", params)
             .then((res) => {
               const nodes = res.data.node_name.map((item) => ({
                 label: item.label,
@@ -95,7 +95,7 @@ export default {
           params.append("node_ip", data.pathLabels[2]);
           params.append("node_name", data.pathLabels[3]);
           this.$http
-            .post("http://localhost:5000/dataShow/getDiskName", params)
+            .post("http://localhost:5000/dataGet/getDiskName", params)
             .then((res) => {
               const nodes = res.data.disk_name.map((item) => ({
                 label: item.label,

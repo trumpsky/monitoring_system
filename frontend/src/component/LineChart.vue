@@ -1,16 +1,14 @@
 <template>
   <div class="about">
-    <div ref="chart" style="width: 1200px; height: 400px"></div>
+    <div ref="chart" style="width: 800px; height: 400px"></div>
   </div>
 </template>
-
 <script>
 export default {
   props: ["moduleName", "propsData"],
   data() {
     return {
       name: this.$store.getters.getObservedState,
-      isLoading: false,
       time: [],
       series: [],
       loadData: [],
@@ -29,32 +27,24 @@ export default {
         },
         toolbox: {
           feature: {
-            dataZoom:{
-              title:{
+            dataZoom: {
+              title: {
                 zoom: "",
-                back: ""
+                back: "",
               },
               iconStyle: {
-                opacity: 0
-              }
+                opacity: 0,
+              },
             },
             dataView: {
               readOnly: true,
               buttonColor: "rgb(30,128,255)",
-            },
-            myTool1: {
-              show: true,
-              title: "实时刷新",
-              icon: "path://M 50 250 Q 100 150 150 250",
-              onclick: function () {
-                this.isLoading = !this.isLoading;
-              },
-            },
+            }
           },
         },
         title: {
           left: "center",
-          text: this.name + "-" + this.moduleName.slice(14, ),
+          text: this.name + "-" + this.moduleName.slice(14),
         },
         xAxis: {
           type: "category",
@@ -62,7 +52,7 @@ export default {
         },
         yAxis: {
           type: "value",
-          scale:true
+          scale: true,
         },
         series: this.series,
       };
@@ -75,23 +65,25 @@ export default {
       chart.dispatchAction({
         type: "takeGlobalCursor",
         key: "dataZoomSelect",
-        dataZoomSelectActive: true
-      })
-      chart.on('datazoom',(params)=>{
-        const startValue = this.time[params.batch[0].startValue]
-        const endValue =  this.time[params.batch[0].endValue]
-        let time = []
-        time.push(startValue)
-        time.push(endValue)
-        this.$emit("datazoom",time)
-      })
+        dataZoomSelectActive: true,
+      });
+      chart.on("datazoom", (params) => {
+        const startValue = this.time[params.batch[0].startValue];
+        const endValue = this.time[params.batch[0].endValue];
+        let time = [];
+        time.push(startValue);
+        time.push(endValue);
+        this.$emit("datazoom", time);
+      });
     },
     refreshData() {
       const keys = Object.keys(this.propsData);
       for (let item in keys) {
         if (typeof this.propsData[keys[item]] != "string") {
           this.loadData.push(this.propsData[keys[item]]);
-          this.time = this.propsData[keys[item]].map((d) => this.$moment(d.time * 1000).format("YYYY/MM/DD HH:mm"))
+          this.time = this.propsData[keys[item]].map((d) =>
+            this.$moment(d.time * 1000).format("YYYY/MM/DD HH:mm")
+          );
           this.series.push({
             name: keys[item],
             data: this.propsData[keys[item]].map((d) => d.value),
@@ -100,18 +92,28 @@ export default {
           });
         }
       }
+    },
+    clickFunction() {
+      if(this.$store.getters.getIsUpdate){
+        return;
+      }
+      this.$store.commit("updateIsUpdate", true)
+      let time = []
+      time.push(this.time[0])
+      time.push(this.time.slice(-1)[0])
+      this.$emit("refresh", time);
+    },
+    stopFunction() {
+      if(!this.$store.getters.getIsUpdate){
+        return;
+      }
+      this.$store.commit("updateIsUpdate", false)
+      this.$emit("stop")
     }
   },
   mounted() {
     this.refreshData();
     this.drawLine();
-  },
-  watch: {
-    isLoading: function (val) {
-      if (val) {
-        this.data = this.refreshData();
-      }
-    },
   },
 };
 </script>
