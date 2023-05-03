@@ -48,6 +48,18 @@ export default new Router({
         {
           path: "/menu/3-3",
           component: () => import('@/pages/Product')
+        },
+        {
+          path: "/menu/4-1",
+          component: () => import('@/pages/AnomalyComparison')
+        },
+        {
+          path: "/menu/4-2",
+          component: () => import('@/pages/AnomalyComparison')
+        },
+        {
+          path: "/menu/4-3",
+          component: () => import('@/pages/AnomalyComparison')
         }
       ]
     }
