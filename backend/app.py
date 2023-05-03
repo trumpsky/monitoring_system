@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 # 注册蓝图
 app.register_blueprint(ds, url_prefix='/dataShow')
-app.register_blueprint(fg, url_prefix='/dataShow')
+app.register_blueprint(fg, url_prefix='/dataGet')
 app.register_blueprint(cp, url_prefix='/comparison')
 
 app.config.from_object(settings)
