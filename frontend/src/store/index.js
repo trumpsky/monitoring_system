@@ -5,7 +5,8 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     observedState: "",
-    isUpdate: false
+    isUpdate: false,
+    algorithm: ""
   },
   mutations: {
     updateObservedState(state, observedState) {
@@ -13,6 +14,9 @@ export default new Vuex.Store({
     },
     updateIsUpdate(state, isUpdate) {
       state.isUpdate = isUpdate
+    },
+    updateAlgorithm(state, algorithm) {
+      state.algorithm = algorithm
     }
   },
   getters: {
@@ -21,6 +25,9 @@ export default new Vuex.Store({
     },
     getIsUpdate(state){
       return state.isUpdate
+    },
+    getAlgorithm(state){
+      return state.algorithm
     }
   }
 });

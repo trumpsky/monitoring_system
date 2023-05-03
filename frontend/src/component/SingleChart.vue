@@ -8,7 +8,7 @@
 import { standardData } from "../assets/data";
 export default {
   name: "SingleChart",
-  props: ['compare','title'],
+  props: ['compare'],
   data() {
     return {
       series: [],
@@ -53,7 +53,7 @@ export default {
         },
         title: {
             left: 'center',
-            text: this.title +'算法异常比较-'+ this.compare
+            text: this.$store.getters.getAlgorithm +'算法异常比较-'+ this.compare
         },
         series: this.series,
       };
@@ -71,7 +71,7 @@ export default {
     },
     refreshData() {
         const index = [0]
-        if(this.compare != 0){
+        if(typeof(this.compare) != "string"){
             index.push(this.compare)
         }
         for(let i=0;i<index.length;i++){

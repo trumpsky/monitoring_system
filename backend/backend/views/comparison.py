@@ -107,7 +107,7 @@ class Hausdorff:
 @cp.route("/getRank", strict_slashes=False, methods=["POST", "GET"])
 def get_rank():
     if request.method == "GET":
-        algorithm = "dtw"
+        algorithm = "hausdorff"
         if algorithm == "dtw":
             dtw = DTW()
             dtw.run()
@@ -119,18 +119,18 @@ def get_rank():
         elif algorithm == "hausdorff":
             hausdorff = Hausdorff()
             hausdorff.run()
-            return jsonify(hausdorff.distances)
+            return jsonify(hausdorff.distances[1:6])
     if request.method == "POST":
         algorithm = request.form["algorithm"]
-        if algorithm == "dtw":
+        if algorithm == "DTW":
             dtw = DTW()
             dtw.run()
-            return jsonify(dtw.distances)
-        elif algorithm == "frechet":
+            return jsonify(dtw.distances[1:6])
+        elif algorithm == "Frechet":
             frechet = Frechet()
             frechet.run()
-            return jsonify(frechet.similarity)
-        elif algorithm == "hausdorff":
+            return jsonify(frechet.similarity[1:6])
+        elif algorithm == "Hausdorff":
             hausdorff = Hausdorff()
             hausdorff.run()
-            return jsonify(hausdorff.distances)
+            return jsonify(hausdorff.distances[1:6])
