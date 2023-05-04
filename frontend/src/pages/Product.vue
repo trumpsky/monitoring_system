@@ -2,34 +2,40 @@
   <div>
     <el-empty description="请等待开发结束"></el-empty>
     <el-row>
-      <el-col :span="8" v-for="(o, index) in 1" :key="o" :offset="index > 0 ? 2 : 0">
+      <el-col
+        :span="8"
+        v-for="(o, index) in 1"
+        :key="o"
+        :offset="index > 0 ? 2 : 0"
+      >
         <el-card :body-style="{ padding: '0px' }">
-          <img src="./../assets/images/skm.jpg" class="image">
-          <div style="padding: 14px;">
+          <img src="./../assets/images/skm.jpg" class="image" />
+          <div style="padding: 14px">
             <span>好吉利的数字</span>
             <div class="bottom clearfix">
               <time class="time">{{ currentDate }}</time>
-              <el-button type="text" class="button" @click="thanks">我已助力！</el-button>
+              <el-button type="text" class="button" @click="thanks"
+                >我已助力！</el-button
+              >
             </div>
           </div>
         </el-card>
       </el-col>
     </el-row>
   </div>
-
 </template>
 
 <script>
-import {Message} from 'element-ui'
+import { Message } from "element-ui";
 
 export default {
   name: "Product",
   methods: {
     thanks() {
-      Message.success("感谢您的助力！系统好感度 +1 ！")
-    }
-  }
-}
+      Message.success("感谢您的助力！系统好感度 +1 ！");
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -60,6 +66,6 @@ export default {
 }
 
 .clearfix:after {
-  clear: both
+  clear: both;
 }
 </style>

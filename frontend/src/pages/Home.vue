@@ -21,7 +21,7 @@
                 : 'el-icon-video-play'
             "
             circle
-            v-if="this.initialData.length != 0"
+            v-if="this.initialData.length != 0 && this.showComponent"
             @click="clickFunction"
           ></el-button>
           <div class="main-information">
@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     change(val) {
-      this.showComponent = val == '2';
+      this.showComponent = val == "2";
     },
     dataZoomData(data) {
       const params = new URLSearchParams();
@@ -107,7 +107,6 @@ export default {
     },
     getChartsData(data) {
       this.selectPath = data;
-      console.log(data);
       const params = new URLSearchParams();
       params.append("data", JSON.stringify(data));
       params.append("start_time", "2023/04/12 20:00");
@@ -115,11 +114,10 @@ export default {
       this.$http.post(this.url, params).then((res) => {
         this.initialData = res.data.result_list;
       });
-      console.log(this.initialData);
     },
-    clickFunction(){
-      this.$refs.dataShow.clickFunction()
-    }
+    clickFunction() {
+      this.$refs.dataShow.clickFunction();
+    },
   },
   watch: {
     "$store.getters.getObservedState": {

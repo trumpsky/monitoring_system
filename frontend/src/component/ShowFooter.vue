@@ -12,11 +12,12 @@
           </el-table-column>
           <el-table-column prop="age" label="学号" width="180">
           </el-table-column>
-          <el-table-column prop="address" label="邮箱">
-          </el-table-column>
+          <el-table-column prop="address" label="邮箱"> </el-table-column>
         </el-table>
         <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="visible = false" class="button">确 定</el-button>
+          <el-button type="primary" @click="visible = false" class="button"
+            >确 定</el-button
+          >
         </span>
       </el-dialog>
     </div>
@@ -55,8 +56,7 @@ export default {
     showModal() {
       this.visible = true;
     },
-    handleOk(e) {
-      console.log(e);
+    handleOk() {
       this.visible = false;
     },
   },
@@ -87,11 +87,11 @@ h4 {
 
 .information {
   display: flex;
-  color: rgb(63,91,148);;
+  color: rgb(63, 91, 148);
   margin-left: 10px;
 }
 .button {
-  background-color: rgb(63,91,148);
+  background-color: rgb(63, 91, 148);
   color: #fff;
 }
 </style>

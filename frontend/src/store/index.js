@@ -10,24 +10,24 @@ export default new Vuex.Store({
   },
   mutations: {
     updateObservedState(state, observedState) {
-      state.observedState = observedState
+      state.observedState = observedState;
     },
     updateIsUpdate(state, isUpdate) {
-      state.isUpdate = isUpdate
+      state.isUpdate = isUpdate;
     },
     updateAlgorithm(state, algorithm) {
-      state.algorithm = algorithm
+      state.algorithm = algorithm;
     }
   },
   getters: {
     getObservedState(state) {
-      return state.observedState
+      return state.observedState;
     },
-    getIsUpdate(state){
-      return state.isUpdate
+    getIsUpdate(state) {
+      return state.isUpdate;
     },
-    getAlgorithm(state){
-      return state.algorithm
+    getAlgorithm(state) {
+      return state.algorithm;
     }
   }
 });

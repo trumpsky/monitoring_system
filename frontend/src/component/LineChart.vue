@@ -19,7 +19,6 @@ export default {
     option() {
       return {
         tooltip: {
-          // 查看详细数据
           trigger: "axis",
           position: function (pt) {
             return [pt[0], "10%"];
@@ -39,7 +38,7 @@ export default {
             dataView: {
               readOnly: true,
               buttonColor: "rgb(30,128,255)",
-            }
+            },
           },
         },
         title: {
@@ -94,22 +93,22 @@ export default {
       }
     },
     clickFunction() {
-      if(this.$store.getters.getIsUpdate){
+      if (this.$store.getters.getIsUpdate) {
         return;
       }
-      this.$store.commit("updateIsUpdate", true)
-      let time = []
-      time.push(this.time[0])
-      time.push(this.time.slice(-1)[0])
+      this.$store.commit("updateIsUpdate", true);
+      let time = [];
+      time.push(this.time[0]);
+      time.push(this.time.slice(-1)[0]);
       this.$emit("refresh", time);
     },
     stopFunction() {
-      if(!this.$store.getters.getIsUpdate){
+      if (!this.$store.getters.getIsUpdate) {
         return;
       }
-      this.$store.commit("updateIsUpdate", false)
-      this.$emit("stop")
-    }
+      this.$store.commit("updateIsUpdate", false);
+      this.$emit("stop");
+    },
   },
   mounted() {
     this.refreshData();

@@ -8,7 +8,7 @@
 import { standardData } from "../assets/data";
 export default {
   name: "SingleChart",
-  props: ['compare'],
+  props: ["compare"],
   data() {
     return {
       series: [],
@@ -35,7 +35,7 @@ export default {
               iconStyle: {
                 opacity: 0,
               },
-              yAxisIndex: false
+              yAxisIndex: false,
             },
             dataView: {
               readOnly: true,
@@ -52,8 +52,9 @@ export default {
           scale: true,
         },
         title: {
-            left: 'center',
-            text: this.$store.getters.getAlgorithm +'算法异常比较-'+ this.compare
+          left: "center",
+          text:
+            this.$store.getters.getAlgorithm + "算法异常比较-" + this.compare,
         },
         series: this.series,
       };
@@ -70,19 +71,21 @@ export default {
       });
     },
     refreshData() {
-        const index = [0]
-        if(typeof(this.compare) != "string"){
-            index.push(this.compare)
-        }
-        for(let i=0;i<index.length;i++){
-            this.series.push({
-                name: index[i],
-                data: standardData[index[i]],
-                type: 'line',
-                smooth: true
-            })
-        }
-      this.time = Array.from({ length: 121 }, (val, i) => this.$moment((i*120+1682232522)*1000).format("YYYY/MM/DD HH:mm"));
+      const index = [0];
+      if (typeof this.compare != "string") {
+        index.push(this.compare);
+      }
+      for (let i = 0; i < index.length; i++) {
+        this.series.push({
+          name: index[i],
+          data: standardData[index[i]],
+          type: "line",
+          smooth: true,
+        });
+      }
+      this.time = Array.from({ length: 121 }, (val, i) =>
+        this.$moment((i * 120 + 1682232522) * 1000).format("YYYY/MM/DD HH:mm")
+      );
     },
   },
   mounted() {

@@ -111,16 +111,19 @@ export default {
           return;
       }
     },
-    getItems(){
-      let result = []
+    getItems() {
+      let result = [];
       const pathSet = this.$refs.cascader.getCheckedNodes();
-      for (let item in pathSet){
-        if(pathSet[item].pathLabels.length == pathSet[pathSet.length-1].pathLabels.length){
-          result.push(pathSet[item].pathLabels)
+      for (let item in pathSet) {
+        if (
+          pathSet[item].pathLabels.length ==
+          pathSet[pathSet.length - 1].pathLabels.length
+        ) {
+          result.push(pathSet[item].pathLabels);
         }
       }
-      this.$emit("submit", result)
-    }
+      this.$emit("submit", result);
+    },
   },
   mounted() {
     this.getFirstLevel();

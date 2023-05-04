@@ -26,7 +26,6 @@ export default {
   },
   methods: {
     handleCommand(command)  {
-      console.log(command)
       this.selectData = parseInt(command)
     },
     getRank(){

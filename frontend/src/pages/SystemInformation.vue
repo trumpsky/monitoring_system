@@ -6,10 +6,9 @@
 
 <script>
 export default {
-  name: "SystemInformation"
-}
+  name: "SystemInformation",
+};
 </script>
 
 <style scoped>
-
 </style>
