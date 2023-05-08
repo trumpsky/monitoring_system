@@ -24,6 +24,7 @@
             v-if="this.initialData.length != 0 && this.showComponent"
             @click="clickFunction"
           ></el-button>
+          <el-empty description="请选择数据集" v-if="this.initialData.length == 0 && this.showComponent"></el-empty>
           <div class="main-information">
             <router-view
               :initialData="initialData"
@@ -35,9 +36,6 @@
             ></router-view>
           </div>
         </el-main>
-        <el-footer>
-          <show-footer></show-footer>
-        </el-footer>
       </el-container>
     </el-container>
   </div>
@@ -45,12 +43,11 @@
 
 <script>
 import SelectionCascader from "../component/SelectionCascader.vue";
-import ShowFooter from "../component/ShowFooter.vue";
 import Sidebar from "../component/Sidebar";
 import ClusterLevel from "./ClusterLevel";
 
 export default {
-  components: { ClusterLevel, Sidebar, ShowFooter, SelectionCascader },
+  components: { ClusterLevel, Sidebar, SelectionCascader },
   data() {
     return {
       showComponent: false,
@@ -130,6 +127,7 @@ export default {
   },
   mounted() {
     this.url = this.getPostPath();
+    this.change(window.location.href.slice(-3,-2));
   },
 };
 </script>
@@ -138,26 +136,22 @@ export default {
 .el-header {
   background-color: #3f5b94;
   color: #fff;
-  line-height: 60px;
+  line-height: 7.5vh;
   display: flex;
   justify-content: flex-end;
-}
-
-.el-footer {
-  background-color: #3f5b94;
-  color: #fff;
-  line-height: 60px;
 }
 
 .el-aside {
   background-color: #3f5b94;
   color: #333;
 }
-
+li.el-submenu {
+  width: 240px;
+}
 .el-main {
-  background-color: #e9eef3;
+  background-color: #fff;
   color: #333;
-  height: 680px;
+  height: 92.5vh;
   display: flex;
   justify-content: center;
 }
