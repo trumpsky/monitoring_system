@@ -28,8 +28,8 @@
 
    ```python
    DB_HOST = "127.0.0.1"
-   DB_USER = "oliver"
-   DB_PWD = "123"
+   DB_USER = "nku_software_test"
+   DB_PWD = "Test_pw123"
    DB_NAME = "db"
    DIALECT = 'mysql'
    DRIVER = 'pymysql'

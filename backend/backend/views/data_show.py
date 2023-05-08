@@ -18,7 +18,8 @@ class Tool:
     def disk_id_to_nodename_ip_diskname(disk_id):
         disk = Disk.query.filter(Disk.disk_id == disk_id).first()
         cluster_name = Tool.cluster_id_to_name(disk.cluster_id)
-        disk_information = cluster_name + "-" + disk.ip + "-" + disk.node_name + "-" + disk.disk_name
+        disk_information = cluster_name + "-" + disk.ip + \
+            "-" + disk.node_name + "-" + disk.disk_name
         return disk_information
 
     @staticmethod
@@ -38,12 +39,14 @@ class Tool:
 
     @staticmethod
     def get_indicator_id(name):
-        result = Indicator.query.filter(Indicator.indicator_name == name).first()
+        result = Indicator.query.filter(
+            Indicator.indicator_name == name).first()
         return result.indicator_id
 
     @staticmethod
     def indicator_id_to_name(indicator_id):
-        result = Indicator.query.filter(Indicator.indicator_id == indicator_id).first()
+        result = Indicator.query.filter(
+            Indicator.indicator_id == indicator_id).first()
         return result.indicator_name
 
     @staticmethod
@@ -53,6 +56,7 @@ class Tool:
                                    Disk.node_name == node_name,
                                    Disk.disk_name == disk_name).first()
         return result.disk_id
+
 
 class DataProcess:
     @staticmethod
@@ -67,14 +71,16 @@ class DataProcess:
             if i == 0:
                 cluster_id = result[i].cluster_id
                 indicator_id = result[i].indicator_id
-                indicator_dict["indicator"] = Tool.indicator_id_to_name(indicator_id)
+                indicator_dict["indicator"] = Tool.indicator_id_to_name(
+                    indicator_id)
                 # cluster_name = cluster_id_to_name(cluster_id)
                 # indicator_dict[cluster_name] = point_list
 
             # #只变indicator
             if indicator_id != result[i].indicator_id:
                 # 1.把集群：【point_list】加到indicator_dict
-                indicator_dict[Tool.cluster_id_to_name(cluster_id)] = point_list
+                indicator_dict[Tool.cluster_id_to_name(
+                    cluster_id)] = point_list
                 # 2.把indicator_dict append到result_list
                 result_list.append(indicator_dict)
                 # 3.更新列表、字典，cluster id，indicator id
@@ -84,11 +90,13 @@ class DataProcess:
                 indicator_id = result[i].indicator_id
                 # 4.把新的indicator_dict里面增加第一行
                 # indicator：xxx
-                indicator_dict["indicator"] = Tool.indicator_id_to_name(indicator_id)
+                indicator_dict["indicator"] = Tool.indicator_id_to_name(
+                    indicator_id)
 
             # 只变cluster
             if cluster_id != result[i].cluster_id and indicator_id == result[i].indicator_id:
-                indicator_dict[Tool.cluster_id_to_name(cluster_id)] = point_list
+                indicator_dict[Tool.cluster_id_to_name(
+                    cluster_id)] = point_list
                 # indicator_dict["cc-cc408-hya"] = point_list
                 cluster_id = result[i].cluster_id
                 point_list = []
@@ -100,7 +108,8 @@ class DataProcess:
             point_dict = {}
 
             if i == len(result) - 1:
-                indicator_dict[Tool.cluster_id_to_name(cluster_id)] = point_list
+                indicator_dict[Tool.cluster_id_to_name(
+                    cluster_id)] = point_list
                 result_list.append(indicator_dict)
 
         return result_list
@@ -117,7 +126,8 @@ class DataProcess:
             if i == 0:
                 node_id = result[i].node_id
                 indicator_id = result[i].indicator_id
-                indicator_dict["indicator"] = Tool.indicator_id_to_name(indicator_id)
+                indicator_dict["indicator"] = Tool.indicator_id_to_name(
+                    indicator_id)
 
             # 变indicator
             if node_id != result[i].node_id and indicator_id != result[i].indicator_id:
@@ -132,7 +142,8 @@ class DataProcess:
                 indicator_id = result[i].indicator_id
                 # 4.把新的indicator_dict里面增加第一行
                 # indicator：xxx
-                indicator_dict["indicator"] = Tool.indicator_id_to_name(indicator_id)
+                indicator_dict["indicator"] = Tool.indicator_id_to_name(
+                    indicator_id)
 
             # 只变cluster
             if node_id != result[i].node_id and indicator_id == result[i].indicator_id:
@@ -164,12 +175,14 @@ class DataProcess:
             if i == 0:
                 disk_id = result[i].disk_id
                 indicator_id = result[i].indicator_id
-                indicator_dict["indicator"] = Tool.indicator_id_to_name(indicator_id)
+                indicator_dict["indicator"] = Tool.indicator_id_to_name(
+                    indicator_id)
 
             # 变indicator
             if disk_id != result[i].disk_id and indicator_id != result[i].indicator_id:
                 # 1.把集群：【point_list】加到indicator_dict
-                indicator_dict[Tool.disk_id_to_nodename_ip_diskname(disk_id)] = point_list
+                indicator_dict[Tool.disk_id_to_nodename_ip_diskname(
+                    disk_id)] = point_list
                 # 2.把indicator_dict append到result_list
                 result_list.append(indicator_dict)
                 # 3.更新列表、字典，cluster id，indicator id
@@ -179,11 +192,13 @@ class DataProcess:
                 indicator_id = result[i].indicator_id
                 # 4.把新的indicator_dict里面增加第一行
                 # indicator：xxx
-                indicator_dict["indicator"] = Tool.indicator_id_to_name(indicator_id)
+                indicator_dict["indicator"] = Tool.indicator_id_to_name(
+                    indicator_id)
 
             # 只变cluster
             if disk_id != result[i].disk_id and indicator_id == result[i].indicator_id:
-                indicator_dict[Tool.disk_id_to_nodename_ip_diskname(disk_id)] = point_list
+                indicator_dict[Tool.disk_id_to_nodename_ip_diskname(
+                    disk_id)] = point_list
                 disk_id = result[i].disk_id
                 point_list = []
 
@@ -194,7 +209,8 @@ class DataProcess:
             point_dict = {}
 
             if i == len(result) - 1:
-                indicator_dict[Tool.disk_id_to_nodename_ip_diskname(disk_id)] = point_list
+                indicator_dict[Tool.disk_id_to_nodename_ip_diskname(
+                    disk_id)] = point_list
                 result_list.append(indicator_dict)
 
         return result_list
@@ -211,9 +227,6 @@ def load_request():
     return start_time, end_time, tree_data
 
 
-
-
-
 @ds.route("/getClusterData", strict_slashes=False, methods=["POST", "GET"])
 def get_cluster_data():
     if request.method == "GET":
@@ -228,17 +241,20 @@ def get_cluster_data():
 
         result = ClusterData.query.filter(ClusterData.time >= start_time,
                                           ClusterData.time <= end_time,
-                                          ClusterData.cluster_id.in_(cluster_ids),
+                                          ClusterData.cluster_id.in_(
+                                              cluster_ids),
                                           ClusterData.indicator_id.in_(indicator_ids)).order_by(
             ClusterData.indicator_id,
             ClusterData.cluster_id,
             ClusterData.time).all()
         result_number = ClusterData.query.filter(ClusterData.time >= start_time,
                                                  ClusterData.time <= end_time,
-                                                 ClusterData.cluster_id.in_(cluster_ids),
+                                                 ClusterData.cluster_id.in_(
+                                                     cluster_ids),
                                                  ClusterData.indicator_id.in_(indicator_ids)).count()
 
-        result = dp.limit_data(result, result_number, limit_number=result_number)
+        result = dp.limit_data(result, result_number,
+                               limit_number=result_number)
 
     if request.method == "POST":
         request_number = 150
@@ -261,15 +277,14 @@ def get_cluster_data():
                                                      ClusterData.time <= end_time,
                                                      ClusterData.cluster_id == cluster_id,
                                                      ClusterData.indicator_id.in_(indicator_ids)).count()
-            result_item = dp.limit_data(result_item, result_number, limit_number=request_number * len(indicator_ids))
+            result_item = dp.limit_data(
+                result_item, result_number, limit_number=request_number * len(indicator_ids))
             result.extend(result_item)
 
     result.sort(key=lambda x: (x.indicator_id, x.cluster_id))
     result_list = DataProcess.cluster_data_process(result)
 
     return jsonify(result_list=result_list)
-
-
 
 
 @ds.route("/getNodeSingleData", strict_slashes=False, methods=["POST", "GET"])
@@ -291,9 +306,11 @@ def get_node_single_data():
             NodeSingleData.time).all()
         result_number = NodeSingleData.query.filter(NodeSingleData.time >= start_time,
                                                     NodeSingleData.time <= end_time,
-                                                    NodeSingleData.indicator_id.in_(indicator_ids),
+                                                    NodeSingleData.indicator_id.in_(
+                                                        indicator_ids),
                                                     NodeSingleData.node_id.in_(node_ids), ).count()
-        result = dp.limit_data(result, result_number, limit_number=request_number)
+        result = dp.limit_data(result, result_number,
+                               limit_number=request_number)
 
     if request.method == "POST":
         request_number = 40
@@ -307,7 +324,8 @@ def get_node_single_data():
                 for ip, node_dict in ip_dict.items():
                     node_ids = []
                     for node_name in node_dict.keys():
-                        node_ids.append(Tool.get_node_id(ip, node_name, cluster_id))
+                        node_ids.append(Tool.get_node_id(
+                            ip, node_name, cluster_id))
                     result_item = NodeSingleData.query.filter(NodeSingleData.time >= start_time,
                                                               NodeSingleData.time <= end_time,
                                                               NodeSingleData.indicator_id == indicator_id,
@@ -327,7 +345,6 @@ def get_node_single_data():
     return jsonify(result_list=result_list)
 
 
-
 @ds.route("/getNodeMultipleData", strict_slashes=False, methods=["POST", "GET"])
 def get_node_multiple_data():
     if request.method == "GET":
@@ -341,15 +358,18 @@ def get_node_multiple_data():
 
         result = NodeMultipleData.query.filter(NodeMultipleData.time >= start_time,
                                                NodeMultipleData.time <= end_time,
-                                               NodeMultipleData.indicator_id.in_(indicator_ids),
+                                               NodeMultipleData.indicator_id.in_(
+                                                   indicator_ids),
                                                NodeMultipleData.disk_id.in_(disk_ids)).order_by(
             NodeMultipleData.disk_id,
             NodeMultipleData.time).all()
         result_number = NodeMultipleData.query.filter(NodeMultipleData.time >= start_time,
                                                       NodeMultipleData.time <= end_time,
-                                                      NodeMultipleData.indicator_id.in_(indicator_ids),
+                                                      NodeMultipleData.indicator_id.in_(
+                                                          indicator_ids),
                                                       NodeMultipleData.disk_id.in_(disk_ids)).count()
-        result = dp.limit_data(result, result_number, limit_number=request_number)
+        result = dp.limit_data(result, result_number,
+                               limit_number=request_number)
 
     if request.method == "POST":
         request_number = 50
@@ -364,7 +384,8 @@ def get_node_multiple_data():
                     for node_name, disk_dict in node_dict.items():
                         disk_ids = []
                         for disk_name in disk_dict.keys():
-                            disk_ids.append(Tool.get_disk_id(cluster_id, ip, node_name, disk_name))
+                            disk_ids.append(Tool.get_disk_id(
+                                cluster_id, ip, node_name, disk_name))
                         result_item = NodeMultipleData.query.filter(NodeMultipleData.time >= start_time,
                                                                     NodeMultipleData.time <= end_time,
                                                                     NodeMultipleData.indicator_id == indicator_id,
