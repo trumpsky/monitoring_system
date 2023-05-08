@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>系统指南</h1>
+    <el-empty description="暂未添加"></el-empty>
   </div>
 </template>
 

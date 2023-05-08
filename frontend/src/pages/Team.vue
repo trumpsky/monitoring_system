@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>开发团队</h1>
+    <el-empty description="暂未添加"></el-empty>
   </div>
 </template>
 
