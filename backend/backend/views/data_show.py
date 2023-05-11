@@ -231,13 +231,13 @@ def load_request():
 def get_cluster_data():
     if request.method == "GET":
         end_time = "2023/04/12 17:34"
-        start_time = "2023/04/12 17:34"
+        start_time = "2023/04/12 17:30"
         start_time = dp.datetime_to_timestamp(start_time)
         end_time = dp.datetime_to_timestamp(end_time)
         request_number = 100
-        cluster_ids = [1]
+        cluster_ids = [1, 2]
 
-        indicator_ids = [1, 2, 3]
+        indicator_ids = [1, 2]
 
         result = ClusterData.query.filter(ClusterData.time >= start_time,
                                           ClusterData.time <= end_time,
@@ -294,15 +294,17 @@ def get_node_single_data():
         start_time = "2023/04/01 00:00"
         start_time = dp.datetime_to_timestamp(start_time)
         end_time = dp.datetime_to_timestamp(end_time)
-        node_ids = [1, 2, 3, 4, 5]
+        node_ids = [1, 2]
         indicator_ids = [5, 6]
         request_number = 20
 
         result = NodeSingleData.query.filter(NodeSingleData.time >= start_time,
                                              NodeSingleData.time <= end_time,
-                                             NodeSingleData.node_id).order_by(
-            NodeSingleData.indicator_id.in_(indicator_ids),
-            NodeSingleData.node_id.in_(node_ids),
+                                             NodeSingleData.indicator_id.in_(
+                                                        indicator_ids),
+                                             NodeSingleData.node_id.in_(node_ids)).order_by(
+            NodeSingleData.indicator_id,
+            NodeSingleData.node_id,
             NodeSingleData.time).all()
         result_number = NodeSingleData.query.filter(NodeSingleData.time >= start_time,
                                                     NodeSingleData.time <= end_time,
@@ -352,8 +354,8 @@ def get_node_multiple_data():
         start_time = "2023/04/01 00:00"
         start_time = dp.datetime_to_timestamp(start_time)
         end_time = dp.datetime_to_timestamp(end_time)
-        disk_ids = [1, 2, 3, 4, 5, 6]
-        indicator_ids = [10]
+        disk_ids = [1, 2]
+        indicator_ids = [9, 10]
         request_number = 15
 
         result = NodeMultipleData.query.filter(NodeMultipleData.time >= start_time,
