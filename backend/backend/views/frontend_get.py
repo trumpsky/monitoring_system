@@ -7,12 +7,11 @@ fg = Blueprint("frontend_get", __name__)
 def get_indicator_name():
     mode = request.form["mode"]
     if mode == "cluster":
-        data = ClusterData.query.with_entities(ClusterData.indicator_id).all()
+        data = ClusterData.query.with_entities(ClusterData.indicator_id).distinct().all()
     elif mode == 'nodeSingle':
-        data = NodeSingleData.query.with_entities(NodeSingleData.indicator_id).all()
+        data = NodeSingleData.query.with_entities(NodeSingleData.indicator_id).distinct().all()
     else:
-        data = NodeMultipleData.query.with_entities(NodeMultipleData.indicator_id).all()
-    data = list(set(data))
+        data = NodeMultipleData.query.with_entities(NodeMultipleData.indicator_id).distinct().all()
     data = sorted(list(map(lambda x: x[0], data)))
     indicators = []
     for item in data:
@@ -42,8 +41,7 @@ def get_node_ip():
     cluster_name = request.form["cluster_name"]
     cluster_id = Cluster.query.filter(Cluster.cluster_name == cluster_name).with_entities(Cluster.cluster_id).all()
     cluster_id = list(map(lambda x: x[0], cluster_id))
-    data = Node.query.filter(Node.cluster_id == cluster_id[0]).with_entities(Node.ip).all()
-    data = list(set(data))
+    data = Node.query.filter(Node.cluster_id == cluster_id[0]).with_entities(Node.ip).distinct().all()
     data = sorted(list(map(lambda x: x[0], data)))
     node_ip = []
     for item in data:
@@ -60,8 +58,7 @@ def get_node_name():
     node_ip = request.form["node_ip"]
     cluster_id = Cluster.query.filter(Cluster.cluster_name == cluster_name).with_entities(Cluster.cluster_id).all()
     cluster_id = list(map(lambda x: x[0], cluster_id))
-    data = Node.query.filter(Node.cluster_id == cluster_id[0], Node.ip == node_ip).with_entities(Node.node_name).all()
-    data = list(set(data))
+    data = Node.query.filter(Node.cluster_id == cluster_id[0], Node.ip == node_ip).with_entities(Node.node_name).distinct().all()
     data = sorted(list(map(lambda x: x[0], data)))
     node_name = []
     for item in data:
@@ -80,8 +77,7 @@ def get_disk_name():
     cluster_id = Cluster.query.filter(Cluster.cluster_name == cluster_name).with_entities(Cluster.cluster_id).all()
     cluster_id = list(map(lambda x: x[0], cluster_id))
     data = Disk.query.filter(Disk.cluster_id == cluster_id[0], Disk.ip == node_ip,
-                             Disk.node_name == node_name).with_entities(Disk.disk_name).all()
-    data = list(set(data))
+                             Disk.node_name == node_name).with_entities(Disk.disk_name).distinct().all()
     data = sorted(list(map(lambda x: x[0], data)))
     disk_name = []
     for item in data:

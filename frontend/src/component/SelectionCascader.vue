@@ -7,6 +7,7 @@
       :show-all-levels="false"
       clearable
       collapse-tags
+      placeholder="请选择集群后点击右侧按钮查询"
       style="width: 350px"
     ></el-cascader>
     <el-button icon="el-icon-search" circle @click="getItems"></el-button>

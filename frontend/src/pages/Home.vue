@@ -24,7 +24,7 @@
             v-if="this.initialData.length != 0 && this.showComponent"
             @click="clickFunction"
           ></el-button>
-          <el-empty description="请选择数据集" v-if="this.initialData.length == 0 && this.showComponent"></el-empty>
+          <el-empty description="请点击右上方选择器选择数据集" v-if="this.initialData.length == 0 && this.showComponent"></el-empty>
           <div class="main-information">
             <router-view
               :initialData="initialData"
