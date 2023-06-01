@@ -122,15 +122,16 @@ def get_rank():
             return jsonify(hausdorff.distances[1:6])
     if request.method == "POST":
         algorithm = request.form["algorithm"]
+        rank = int(request.form["rank_number"]) + 1
         if algorithm == "DTW":
             dtw = DTW()
             dtw.run()
-            return jsonify(dtw.distances[1:6])
+            return jsonify(dtw.distances[1:rank])
         elif algorithm == "Frechet":
             frechet = Frechet()
             frechet.run()
-            return jsonify(frechet.similarity[1:6])
+            return jsonify(frechet.similarity[1:rank])
         elif algorithm == "Hausdorff":
             hausdorff = Hausdorff()
             hausdorff.run()
-            return jsonify(hausdorff.distances[1:6])
+            return jsonify(hausdorff.distances[1:rank])
