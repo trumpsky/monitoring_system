@@ -13,17 +13,22 @@
           ></selection-cascader>
         </el-header>
         <el-main>
-          <el-button
-            :type="this.$store.getters.getIsUpdate ? 'success' : 'primary'"
-            :icon="
-              this.$store.getters.getIsUpdate
-                ? 'el-icon-video-pause'
-                : 'el-icon-video-play'
-            "
-            circle
-            v-if="this.initialData.length != 0 && this.showComponent"
-            @click="clickFunction"
-          ></el-button>
+
+          <el-tooltip class="item" effect="light" content="实时刷新按钮" placement="top-end"
+          v-if="this.initialData.length != 0 && this.showComponent"
+          ><el-button
+          :type="this.$store.getters.getIsUpdate ? 'success' : 'primary'"
+          :icon="
+            this.$store.getters.getIsUpdate
+              ? 'el-icon-video-pause'
+              : 'el-icon-video-play'
+          "
+          circle
+          @click="clickFunction"
+        ></el-button>
+        </el-tooltip>
+          
+
           <el-empty description="请点击右上方选择器选择数据集" v-if="this.initialData.length == 0 && this.showComponent"></el-empty>
           <div class="main-information">
             <router-view
